@@ -14,9 +14,46 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin example.tmap
+#begin File.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:File.spritefont
+
+#begin map4.tmap
 /importer:BasicTilemapImporter
 /processor:BasicTilemapProcessor
 /processorParam:Scale=1
-/build:example.tmap
+/build:map4.tmap
+
+#begin map5.tmap
+/importer:BasicTilemapImporter
+/processor:BasicTilemapProcessor
+/processorParam:Scale=1
+/build:map5.tmap
+
+#begin Penguin64pxT50pxW.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Penguin64pxT50pxW.png
+
+#begin tilemapCastleGame1.3.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:tilemapCastleGame1.3.png
 

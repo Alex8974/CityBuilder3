@@ -39,8 +39,17 @@ namespace BasicTilemapPipeline
             // Fourth line is the map data (the indices of tiles in the map)
             // We can use the Linq Select() method to convert the array of strings
             // into an array of ints
-            map.TileIndices = lines[3].Split(',').Select(index => int.Parse(index)).ToArray();
+            //map.TileIndices = lines[3].Split(',').Select(index => int.Parse(index)).ToArray();
 
+            map.TileIndices = new int[map.MapWidth * map.MapHeight];
+            for (int i = 0; i < map.MapHeight; i++)
+            {
+                var line = lines[3 + i].Split(',');
+                for (int j = 0; j < map.MapWidth; j++)
+                {
+                    map.TileIndices[(i * map.MapWidth) + j] = int.Parse(line[j]);
+                }
+            }
             // At this point, we've copied all of the file data into our
             // BasicTilemapContent object, so we pass it on to the processor
             return map;
