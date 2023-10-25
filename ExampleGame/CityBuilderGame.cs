@@ -5,6 +5,15 @@ using ExampleGame.Screens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Linq;
+using SharpDX.DirectWrite;
+using System.IO;
+using System;
+using System.Drawing.Text;
+using System.Windows.Forms;
+using MessageBox = System.Windows.Forms.MessageBox;
+using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
+using Keys = Microsoft.Xna.Framework.Input.Keys;
 
 namespace ExampleGame
 {
@@ -58,22 +67,59 @@ namespace ExampleGame
 
             _tilemap = Content.Load<BasicTilemap>("map4");
             buildingmap = Content.Load<BasicTilemap>("map5");
+            LoadGame();
             pen.Position = new Vector2(6 * _tilemap.TileWidth, 6 * _tilemap.TileHeight);
-
+            
             // TODO: use this.Content to load your game content here
             //_tilemap.LoadContent(Content);
             //buildingmap.LoadContent(Content);
             grid = new Grid(_tilemap.MapWidth, _tilemap.MapHeight, _tilemap);
-            camera = new Camera(GraphicsDevice.Viewport, _tilemap.MapWidth * _tilemap.TileWidth, _tilemap.TileHeight * _tilemap.TileHeight);
+            camera = new Camera(GraphicsDevice.Viewport, _tilemap.MapWidth * _tilemap.TileWidth, _tilemap.MapHeight * _tilemap.TileHeight);
 
             font = Content.Load<SpriteFont>("File");
             pen.texture = Content.Load<Texture2D>("Penguin64pxT50pxW");
         }
 
+        private void LoadGame()
+        {
+            string filepath = "..\\..\\..\\buildingSaveFile.txt";
+
+            try
+            {
+                string[] lines = File.ReadAllLines(filepath);
+
+                string boxes = lines[0];
+                string[] tiles = boxes.Split(',');
+
+                for(int i = 0; i < buildingmap.TileIndices.Length -1; i++)
+                {
+                    if(int.TryParse(tiles[i], out int tileIndex))
+                    {
+                        buildingmap.TileIndices[i] = tileIndex;
+                    }
+                    else
+                    {
+                        buildingmap.TileIndices[i] = 0;
+                    }
+                }
+                
+
+            }
+            catch
+            {
+
+                MessageBox.Show("no load file found");
+            }
+        }
+
         protected override void Update(GameTime gameTime)
         {
 
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)) Exit();
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            {
+                CloseGame();
+                Exit();
+            }
 
             #region keboard / mouse
             prevkeyboardstate = curkeyboardstate;
@@ -91,7 +137,7 @@ namespace ExampleGame
 
 
                 //changes to and from building and moving
-                if (clickState == ClickState.Building) clickState = buildingScreen.Update(gameTime, curmouseState, buildingmap, curkeyboardstate, prevkeyboardstate);
+                if (clickState == ClickState.Building) clickState = buildingScreen.Update(gameTime, curmouseState, buildingmap, curkeyboardstate, prevkeyboardstate, camera, _graphics.GraphicsDevice);
                 else if (clickState == ClickState.Move)
                 {
                     //sets the destination location
@@ -141,6 +187,35 @@ namespace ExampleGame
 
 
             base.Update(gameTime);
+        }
+
+        protected void CloseGame()
+        {
+            string s = "";
+            for(int i = 0; i < buildingmap.TileIndices.Length-1; i++)
+            {
+                s += $"{buildingmap.TileIndices[i]}, ";
+            }
+            WriteToFile(s);
+        }
+
+        private void WriteToFile(string s)
+        {
+            string filePath = "..\\..\\..\\buildingSaveFile.txt";
+
+            if (!File.Exists(filePath))
+            {
+                File.Create(filePath).Close();
+            }
+
+            // Read the first three lines from the file
+
+            File.WriteAllLines(filePath, new string[0]);
+
+            using (StreamWriter writer = new StreamWriter(filePath, true))
+            {
+                writer.WriteLine(s);
+            }
         }
 
         protected override void Draw(GameTime gameTime)

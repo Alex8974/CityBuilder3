@@ -18,7 +18,7 @@ namespace ExampleGame.Screens
         bool deleteMode = false;
         public BuildingScreen()
         {
-            buildingOptions =(BuildingOptions) 20;
+            buildingOptions = (BuildingOptions) 20;
         }
 
         public void Initilize()
@@ -26,10 +26,10 @@ namespace ExampleGame.Screens
 
         }
 
-        public ClickState Update(GameTime gameTime, MouseState ms, BasicTilemap bm, KeyboardState kbs, KeyboardState prevkbs)
+        public ClickState Update(GameTime gameTime, MouseState ms, BasicTilemap bm, KeyboardState kbs, KeyboardState prevkbs, Camera c, GraphicsDevice d)
         {
-            int mx = (int)ms.Position.X / 32;
-            int my = (int)ms.Position.Y / 32;
+            int mx = (ms.Position.X + (int)c.Position.X - d.Viewport.Width / 2) / bm.TileWidth;
+            int my = (ms.Position.Y + (int)c.Position.Y - d.Viewport.Height / 2) / bm.TileHeight;
 
             if (kbs.IsKeyDown(Keys.X) && !prevkbs.IsKeyDown(Keys.X)) deleteMode = !deleteMode;
             if (deleteMode == false)
