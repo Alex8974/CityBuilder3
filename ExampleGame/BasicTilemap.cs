@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
@@ -64,17 +65,36 @@ namespace ExampleGame
                     if (index == -1) continue;
 
                     // Draw the current tile
-                    spriteBatch.Draw(
-                        TilesetTexture,
-                        new Rectangle(
-                            x * TileWidth,
-                            y * TileHeight,
-                            TileWidth,
-                            TileHeight
-                            ),
-                        Tiles[index],
-                        Color.White
-                        );
+                    try
+                    {
+                        spriteBatch.Draw(
+                                                TilesetTexture,
+                                                new Rectangle(
+                                                    x * TileWidth,
+                                                    y * TileHeight,
+                                                    TileWidth,
+                                                    TileHeight
+                                                    ),
+                                                Tiles[index],
+                                                Color.White
+                                                );
+                    }
+                    catch
+                    {
+                        spriteBatch.Draw(
+                                               TilesetTexture,
+                                               new Rectangle(
+                                                   x * TileWidth,
+                                                   y * TileHeight,
+                                                   TileWidth,
+                                                   TileHeight
+                                                   ),
+                                               Tiles[0],
+                                               Color.White
+                                               );
+                    }
+                    
+                    
                 }
             }
 

@@ -14,6 +14,16 @@ namespace ExampleGame.Enums
         FenceUpRightSide,
         FenceBottomLeftCorner,
         FenceUpLeftSide,
-        HouseBlue,
+        BlueHouse,
+        RedHouse,
+        Tree,
+        ChoppedTree,
+        FullCrops,
+        Crops80,
+        Crops60,
+        Crops40,
+        Crops20,
+        Crops10,
+        CropsEmpty
     }
 }

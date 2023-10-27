@@ -1,7 +1,5 @@
 ﻿using ExampleGame.Enums;
 using ExampleGame.Screens;
-using ExampleGame.Enums;
-using ExampleGame.Screens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -14,6 +12,8 @@ using System.Windows.Forms;
 using MessageBox = System.Windows.Forms.MessageBox;
 using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
+using CityBuilderGame;
+using System.Collections.Generic;
 
 namespace ExampleGame
 {
@@ -35,12 +35,15 @@ namespace ExampleGame
         private MouseState curmouseState;
         private MouseState prevmouseState;
         Grid grid;
+        Grid grid2;
         ClickState clickState;
         GameScreens gameScreens;
 
         private Camera camera;
         BuildingScreen buildingScreen;
         StartScreen startScreen;
+
+        private List<Farmer> farmers;
 
 
         public CityBuilderGame()
@@ -55,8 +58,10 @@ namespace ExampleGame
         {
             // TODO: Add your initialization logic here
             pen = new penguin();
-            buildingScreen = new BuildingScreen();
+            farmers = new();
+            buildingScreen = new BuildingScreen(farmers, Content);
             startScreen = new StartScreen();
+            
 
             base.Initialize();
         }
@@ -73,13 +78,16 @@ namespace ExampleGame
             // TODO: use this.Content to load your game content here
             //_tilemap.LoadContent(Content);
             //buildingmap.LoadContent(Content);
-            grid = new Grid(_tilemap.MapWidth, _tilemap.MapHeight, _tilemap);
+            grid = new Grid(_tilemap.MapWidth, _tilemap.MapHeight, _tilemap, 0);
             camera = new Camera(GraphicsDevice.Viewport, _tilemap.MapWidth * _tilemap.TileWidth, _tilemap.MapHeight * _tilemap.TileHeight);
 
             font = Content.Load<SpriteFont>("File");
             pen.texture = Content.Load<Texture2D>("Penguin64pxT50pxW");
         }
-
+        
+        /// <summary>
+        /// loads the game from the buildingSaveFile and makes a new one if that is not found
+        /// </summary>
         private void LoadGame()
         {
             string filepath = "..\\..\\..\\buildingSaveFile.txt";
@@ -102,13 +110,11 @@ namespace ExampleGame
                         buildingmap.TileIndices[i] = 0;
                     }
                 }
-                
-
             }
             catch
             {
 
-                MessageBox.Show("no load file found");
+                MessageBox.Show("no load file found press ok to continue");
             }
         }
 
@@ -131,13 +137,13 @@ namespace ExampleGame
             int tileY = (curmouseState.Position.Y + (int)camera.Position.Y - GraphicsDevice.Viewport.Height / 2) / _tilemap.TileHeight; // find the y coordinate of the clicked tile
             #endregion
 
-            if (gameScreens == GameScreens.Start) gameScreens = startScreen.Update(gameTime, curkeyboardstate);
+            if (gameScreens == GameScreens.Start) gameScreens = startScreen.Update(gameTime, curkeyboardstate, prevkeyboardstate);
             else if (gameScreens == GameScreens.Running)
             {
 
 
                 //changes to and from building and moving
-                if (clickState == ClickState.Building) clickState = buildingScreen.Update(gameTime, curmouseState, buildingmap, curkeyboardstate, prevkeyboardstate, camera, _graphics.GraphicsDevice);
+                if (clickState == ClickState.Building) clickState = buildingScreen.Update(gameTime, curmouseState, buildingmap, curkeyboardstate, prevkeyboardstate, camera, _graphics.GraphicsDevice, grid);
                 else if (clickState == ClickState.Move)
                 {
                     //sets the destination location
@@ -145,6 +151,7 @@ namespace ExampleGame
 
                     if (curkeyboardstate.IsKeyDown(Keys.B) && prevkeyboardstate.IsKeyUp(Keys.B)) clickState = ClickState.Building;
                     pen.Update(gameTime, _tilemap, grid);
+                    foreach (Farmer f in farmers) f.Update(gameTime, buildingmap);
 
                 }
 
@@ -174,18 +181,16 @@ namespace ExampleGame
                     pen.Move(gameTime, _tilemap);
                 }
                 #endregion
-
+                
+                #region move camera
+                if (curkeyboardstate.IsKeyDown(Keys.Left)) { camera.Move(new Vector2(-2, 0)); }
+                if (curkeyboardstate.IsKeyDown(Keys.Right)) camera.Move(new Vector2(2, 0));
+                if (curkeyboardstate.IsKeyDown(Keys.Up)) camera.Move(new Vector2(0, -2));
+                if (curkeyboardstate.IsKeyDown(Keys.Down)) camera.Move(new Vector2(0, 2));
+                camera.UpdateTransform(GraphicsDevice.Viewport);
+                #endregion
             }
-
-            #region move camera
-            if (curkeyboardstate.IsKeyDown(Keys.Left)) { camera.Move(new Vector2(-2, 0)); }
-            if (curkeyboardstate.IsKeyDown(Keys.Right)) camera.Move(new Vector2(2, 0));
-            if (curkeyboardstate.IsKeyDown(Keys.Up)) camera.Move(new Vector2(0, -2));
-            if (curkeyboardstate.IsKeyDown(Keys.Down)) camera.Move(new Vector2(0, 2));
-            camera.UpdateTransform(GraphicsDevice.Viewport);
-            #endregion
-
-
+            
             base.Update(gameTime);
         }
 
@@ -226,8 +231,9 @@ namespace ExampleGame
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, camera.Transform);
             _tilemap.Draw(gameTime, _spriteBatch);
             _spriteBatch.Draw(pen.texture, pen.Position, null, Color.White, 0, new Vector2(0, 0), 0.5f, SpriteEffects.None, 0);
+            
             buildingmap.Draw(gameTime, _spriteBatch);
-
+            foreach (Farmer f in farmers) f.Draw(_spriteBatch, gameTime);
             _spriteBatch.End();
             base.Draw(gameTime);
 
@@ -235,7 +241,7 @@ namespace ExampleGame
             if (gameScreens == GameScreens.Start) { startScreen.Draw(gameTime, _spriteBatch, font); }
             else if (gameScreens == GameScreens.Running)
             {
-                _spriteBatch.DrawString(font, $"Current action state: {clickState} ", new Vector2(250, 50), Color.Black, 0, new Vector2(0, 0), 1.5f, SpriteEffects.None, 0);
+                _spriteBatch.DrawString(font, $"Current action state: {clickState} ", new Vector2(220, 50), Color.Black, 0, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
                 if (clickState == ClickState.Building) buildingScreen.Draw(gameTime, _spriteBatch, font);
             }
 
