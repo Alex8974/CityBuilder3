@@ -46,14 +46,16 @@ namespace ExampleGame.Screens
                 #region cycles through the building options
                 if (kbs.IsKeyDown(Keys.E) && prevkbs.IsKeyUp(Keys.E)) 
                 { 
-
                     buildingOptions++;
-                    if (!Enum.IsDefined(typeof(BuildingOptions), buildingOptions)) { buildingOptions--; }
+                    if (!Enum.IsDefined(typeof(BuildingOptions), buildingOptions)) { buildingOptions--;}
+                    if (buildingOptions == BuildingOptions.RedHouse) buildingOptions++;
+                    if (buildingOptions > (BuildingOptions)24 && buildingOptions < (BuildingOptions)30) buildingOptions = (BuildingOptions)30;
                 }
                 if (kbs.IsKeyDown(Keys.Q) && prevkbs.IsKeyUp(Keys.Q))
                 {
                     buildingOptions--;
                     if (!Enum.IsDefined(typeof(BuildingOptions), buildingOptions)) { buildingOptions++; }
+                    if (buildingOptions > (BuildingOptions)24 && buildingOptions < (BuildingOptions)30) buildingOptions = (BuildingOptions)24;
                 }
                 #endregion
 

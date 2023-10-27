@@ -60,8 +60,7 @@ namespace ExampleGame
             pen = new penguin();
             farmers = new();
             buildingScreen = new BuildingScreen(farmers, Content);
-            startScreen = new StartScreen();
-            
+            startScreen = new StartScreen();            
 
             base.Initialize();
         }
@@ -113,11 +112,14 @@ namespace ExampleGame
             }
             catch
             {
-
                 MessageBox.Show("no load file found press ok to continue");
             }
         }
 
+        /// <summary>
+        /// updates the game 
+        /// </summary>
+        /// <param name="gameTime">the game time</param>
         protected override void Update(GameTime gameTime)
         {
 
@@ -194,6 +196,9 @@ namespace ExampleGame
             base.Update(gameTime);
         }
 
+        /// <summary>
+        /// when the game is closed
+        /// </summary>
         protected void CloseGame()
         {
             string s = "";
@@ -204,6 +209,10 @@ namespace ExampleGame
             WriteToFile(s);
         }
 
+        /// <summary>
+        /// writes to the save file
+        /// </summary>
+        /// <param name="s">the string that is being written</param>
         private void WriteToFile(string s)
         {
             string filePath = "..\\..\\..\\buildingSaveFile.txt";
@@ -223,6 +232,10 @@ namespace ExampleGame
             }
         }
 
+        /// <summary>
+        /// draws the sprites
+        /// </summary>
+        /// <param name="gameTime">the game time</param>
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
