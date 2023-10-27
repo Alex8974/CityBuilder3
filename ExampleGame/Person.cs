@@ -212,7 +212,7 @@ namespace ExampleGame
                     }
                     catch
                     {
-                        MessageBox.Show("bad click");
+                        //MessageBox.Show("bad click");
                     }
                 }
             }

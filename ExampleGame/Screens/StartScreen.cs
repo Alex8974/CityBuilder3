@@ -14,9 +14,10 @@ namespace ExampleGame.Screens
     public class StartScreen
     {
         private SelectedIndex selectedIndex = 0;
+        private Texture2D backgoundtexture;
         public void Initilze(ContentManager c)
         {
-
+            backgoundtexture = c.Load<Texture2D>("city");
         }
 
         public GameScreens Update(GameTime gT, KeyboardState keyboardState, KeyboardState prevkbs)
@@ -32,7 +33,7 @@ namespace ExampleGame.Screens
                 selectedIndex--;
                 if (!Enum.IsDefined(typeof(SelectedIndex), selectedIndex)) { selectedIndex = (SelectedIndex)1; }
             }
-            if (keyboardState.IsKeyDown(Keys.Enter))
+            if (keyboardState.IsKeyDown(Keys.Enter) && !prevkbs.IsKeyDown(Keys.Enter))
             {
                 switch (selectedIndex)
                 {
@@ -52,16 +53,19 @@ namespace ExampleGame.Screens
             switch (selectedIndex)
             {
                 case SelectedIndex.StartGame:
-                    sb.DrawString(f, "City Builder", new Vector2(320, 120), Color.Black, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
+                    sb.Draw(backgoundtexture, new Vector2(0, 0), Color.White);
+                    sb.DrawString(f, "City Builder", new Vector2(230, 120), Color.Black, 0, new Vector2(0, 0), 2f, SpriteEffects.None, 0);
                     sb.DrawString(f, "Bengin Game", new Vector2(280, 200), Color.Yellow, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
-                    sb.DrawString(f, "View Controlls", new Vector2(250, 230), Color.Black, 0, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    sb.DrawString(f, "View Controlls", new Vector2(260, 230), Color.Black, 0, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
                     break;
                 case SelectedIndex.Controls:
-                    sb.DrawString(f, "City Builder", new Vector2(320, 120), Color.Black, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
+                    sb.Draw(backgoundtexture, new Vector2(0, 0), Color.White);
+                    sb.DrawString(f, "City Builder", new Vector2(230, 120), Color.Black, 0, new Vector2(0, 0), 2f, SpriteEffects.None, 0);
                     sb.DrawString(f, "Bengin Game", new Vector2(280, 200), Color.Black, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
-                    sb.DrawString(f, "View Controlls", new Vector2(250, 230), Color.Yellow, 0, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    sb.DrawString(f, "View Controlls", new Vector2(260, 230), Color.Yellow, 0, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
                     break;
                 default:
+                    sb.Draw(backgoundtexture, new Vector2(0, 0), Color.White);
                     sb.DrawString(f, "City Builder", new Vector2(320, 120), Color.Black, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
                     sb.DrawString(f, "Bengin Game", new Vector2(280, 200), Color.Black, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
                     sb.DrawString(f, "View Controlls", new Vector2(250, 230), Color.Black, 0, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);

@@ -81,17 +81,17 @@ namespace ExampleGame
                     }
                     catch
                     {
-                        spriteBatch.Draw(
-                                               TilesetTexture,
-                                               new Rectangle(
-                                                   x * TileWidth,
-                                                   y * TileHeight,
-                                                   TileWidth,
-                                                   TileHeight
-                                                   ),
-                                               Tiles[0],
-                                               Color.White
-                                               );
+                         spriteBatch.Draw(
+                                                TilesetTexture,
+                                                new Rectangle(
+                                                    x * TileWidth,
+                                                    y * TileHeight,
+                                                    TileWidth,
+                                                    TileHeight
+                                                    ),
+                                                Tiles[index],
+                                                Color.White
+                                                );
                     }
                     
                     

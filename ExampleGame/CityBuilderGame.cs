@@ -37,7 +37,6 @@ namespace ExampleGame
         private MouseState curmouseState;
         private MouseState prevmouseState;
         Grid grid;
-        Grid grid2;
         ClickState clickState;
         GameScreens gameScreens;
 
@@ -66,7 +65,7 @@ namespace ExampleGame
             buildingScreen = new BuildingScreen(farmers, Content);
             startScreen = new StartScreen();
             controlScreen = new();
-
+            startScreen.Initilze(Content);
             base.Initialize();
         }
 
@@ -143,8 +142,8 @@ namespace ExampleGame
             int tileX = (curmouseState.Position.X + (int)camera.Position.X - GraphicsDevice.Viewport.Width / 2) / _tilemap.TileWidth; // find the x coordinate of the clicked tile
             int tileY = (curmouseState.Position.Y + (int)camera.Position.Y - GraphicsDevice.Viewport.Height / 2) / _tilemap.TileHeight; // find the y coordinate of the clicked tile
             #endregion
-
-            if (gameScreens == GameScreens.Start) gameScreens = startScreen.Update(gameTime, curkeyboardstate, prevkeyboardstate);
+            if (gameScreens == GameScreens.Controls) gameScreens = controlScreen.Update(gameTime, curkeyboardstate, prevkeyboardstate);
+            else if (gameScreens == GameScreens.Start) gameScreens = startScreen.Update(gameTime, curkeyboardstate, prevkeyboardstate);
             else if (gameScreens == GameScreens.Running)
             {
 
@@ -192,7 +191,7 @@ namespace ExampleGame
                     pen.Move(gameTime, _tilemap);
                 }
                 #endregion
-                
+
                 #region move camera
                 if (curkeyboardstate.IsKeyDown(Keys.Left)) { camera.Move(new Vector2(-2, 0)); }
                 if (curkeyboardstate.IsKeyDown(Keys.Right)) camera.Move(new Vector2(2, 0));
@@ -251,10 +250,10 @@ namespace ExampleGame
 
             // TODO: Add your drawing code here
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, camera.Transform);
-            _tilemap.Draw(gameTime, _spriteBatch);
-            _spriteBatch.Draw(pen.texture, pen.Position, null, Color.White, 0, new Vector2(0, 0), 0.5f, SpriteEffects.None, 0);
+            if(gameScreens != GameScreens.Controls) _tilemap.Draw(gameTime, _spriteBatch);
+            if (gameScreens != GameScreens.Controls) _spriteBatch.Draw(pen.texture, pen.Position, null, Color.White, 0, new Vector2(0, 0), 0.5f, SpriteEffects.None, 0);
             
-            buildingmap.Draw(gameTime, _spriteBatch);
+            if(gameScreens != GameScreens.Controls )buildingmap.Draw(gameTime, _spriteBatch);
             foreach (Farmer f in farmers) f.Draw(_spriteBatch, gameTime);
             _spriteBatch.End();
             base.Draw(gameTime);
@@ -269,7 +268,7 @@ namespace ExampleGame
                 if (clickState == ClickState.Building) buildingScreen.Draw(gameTime, _spriteBatch, font);
             }
             else if (gameScreens == GameScreens.Controls) controlScreen.Draw(_spriteBatch, font);
-            _spriteBatch.DrawString(font, $"Food : {TotalFood} ", new Vector2(700, 10), Color.Black, 0, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+            if(gameScreens == GameScreens.Running)_spriteBatch.DrawString(font, $"Food : {TotalFood} ", new Vector2(700, 10), Color.Black, 0, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
             
 
 

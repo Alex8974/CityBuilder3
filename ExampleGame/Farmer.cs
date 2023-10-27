@@ -152,9 +152,16 @@ namespace CityBuilderGame
                         if (Position == home)
                         {
                             state = FarmerState.Idle;
-
-                            NewResources += ResourcesHeld;
-                            ResourcesHeld = 0;
+                            if (CheckHome())
+                            {
+                                NewResources += ResourcesHeld;
+                                ResourcesHeld = 0;
+                            }
+                            else
+                            {
+                                home = Vector2.Zero;
+                                FindHome();
+                            }
                         }
                     }
                     else{FindHome();}
@@ -171,6 +178,15 @@ namespace CityBuilderGame
                     break;
             
             }
+        }
+
+        private bool CheckHome()
+        {
+            int holdx = (int)home.X / 32;
+            int holdy = (int)home.Y / 32;
+
+            if (bm.TileIndices[(holdy*bm.MapWidth) +holdx] == 21) return true;
+            else return false;
         }
 
         /// <summary>

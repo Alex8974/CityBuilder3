@@ -55,6 +55,7 @@ namespace ExampleGame.Screens
                 {
                     buildingOptions--;
                     if (!Enum.IsDefined(typeof(BuildingOptions), buildingOptions)) { buildingOptions++; }
+                    if (buildingOptions == BuildingOptions.RedHouse) buildingOptions--;
                     if (buildingOptions > (BuildingOptions)24 && buildingOptions < (BuildingOptions)30) buildingOptions = (BuildingOptions)24;
                 }
                 #endregion
