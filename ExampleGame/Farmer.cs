@@ -29,10 +29,9 @@ namespace CityBuilderGame
         private Vector2 curfarmLocation; // Store the current farm location
         private Grid grid; // Reference to the grid of nodes of water
         private BasicTilemap bm; // the building map that is passed in from the constructor
-        private int FarmerFrame = 0;
 
-        private double FarmingCoolDown = 0;
-        private double AnimationTmer = 0;
+        private double FarmingCoolDown = 0; // the time since last farm from the farmer
+        private double AnimationTmer = 0; // the time since last animation of the farmer
 
         public override int Health { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
@@ -75,6 +74,10 @@ namespace CityBuilderGame
             }
         }
 
+        /// <summary>
+        /// updates the animation for the farmer
+        /// </summary>
+        /// <param name="gT">the game time</param>
         private void UpdateAnimation(GameTime gT)
         {
             AnimationTmer += gT.ElapsedGameTime.TotalSeconds;
@@ -83,22 +86,22 @@ namespace CityBuilderGame
                 switch (state)
                 {
                     case FarmerState.Idle:
-                        FarmerFrame = 0;
+                        animationFrame = 0;
                         break;
                     case FarmerState.Farming:
-                        if (FarmerFrame < 3) FarmerFrame = 3;
-                        else if (FarmerFrame == 5) FarmerFrame = 3;
-                        else FarmerFrame++;
+                        if (animationFrame < 3) animationFrame = 3;
+                        else if (animationFrame == 5) animationFrame = 3;
+                        else animationFrame++;
                         break;
                     case FarmerState.ReturningHome:
-                        if (FarmerFrame == 1) FarmerFrame = 2;
-                        else if (FarmerFrame == 2) FarmerFrame = 1;
-                        else FarmerFrame = 1;
+                        if (animationFrame == 1) animationFrame = 2;
+                        else if (animationFrame == 2) animationFrame = 1;
+                        else animationFrame = 1;
                         break;
                     case FarmerState.GoingtoFarm:
-                        if (FarmerFrame == 1) FarmerFrame = 2;
-                        else if (FarmerFrame == 2) FarmerFrame = 1;
-                        else FarmerFrame = 1;
+                        if (animationFrame == 1) animationFrame = 2;
+                        else if (animationFrame == 2) animationFrame = 1;
+                        else animationFrame = 1;
                         break;
                 }
                 AnimationTmer = 0;
@@ -161,6 +164,11 @@ namespace CityBuilderGame
             }
         }
 
+        /// <summary>
+        /// finds the closest farm to the farmer
+        /// </summary>
+        /// <param name="Tm">the building tile map</param>
+        /// <returns>returns the position in a vector2</returns>
         private Vector2 FindNextFarmLocation(BasicTilemap Tm)
         {
             // Use the Pathfinding class to find the next farmable location
@@ -217,7 +225,11 @@ namespace CityBuilderGame
             }
         }
 
-
+        /// <summary>
+        /// farms the tile that the farmer is on
+        /// </summary>
+        /// <param name="location">the location of the tile</param>
+        /// <param name="bm">the building map</param>
         private void FarmTile(Vector2 location, BasicTilemap bm)
         {
             int tilex = (int)location.X / 32;
@@ -238,9 +250,14 @@ namespace CityBuilderGame
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// draws the farmer
+        /// </summary>
+        /// <param name="s">spritebatch</param>
+        /// <param name="gT">game time</param>
         public override void Draw(SpriteBatch s, GameTime gT)
         {
-            s.Draw(texture, new Vector2(Position.X-2, Position.Y), new Rectangle(FarmerFrame*32,0,32,32), Color.White, 0, new Vector2(0, 0), 1.25f, SpriteEffects.None, 0);
+            s.Draw(texture, new Vector2(Position.X-2, Position.Y), new Rectangle(animationFrame*size,0,size,size), Color.White, 0, new Vector2(0, 0), 1.25f, SpriteEffects.None, 0);
         }
     }
 

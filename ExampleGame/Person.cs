@@ -23,7 +23,12 @@ namespace ExampleGame
         /// the time between each animaitons
         /// </summary>
         protected const float ANIMATION_TIMER = 0.1f;
+
+        /// <summary>
+        /// the size of the sprite
+        /// </summary>
         protected int size = 32;
+
         protected const double WALKCOOLDOWN = 0.5f;
         protected double walktimer = 0;
 
