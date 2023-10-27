@@ -10,8 +10,6 @@ namespace ExampleGame
 {
     internal class penguin : Person
     {
-        public override int Health { get; set; } = 8;
-
         public override void Building()
         {
             throw new NotImplementedException();

@@ -60,7 +60,7 @@ namespace ExampleGame
         /// <summary>
         /// the health of the person
         /// </summary>
-        public abstract int Health { get; set; }
+        public int Health { get; set; } = 8;
 
         /// <summary>
         /// their movement spped

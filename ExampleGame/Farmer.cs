@@ -9,6 +9,7 @@ using ExampleGame;
 using System.Windows.Forms.VisualStyles;
 using Microsoft.Xna.Framework.Content;
 using ExampleGame.Enums;
+using SharpDX.DirectWrite;
 
 namespace CityBuilderGame
 {
@@ -31,9 +32,7 @@ namespace CityBuilderGame
         private BasicTilemap bm; // the building map that is passed in from the constructor
 
         private double FarmingCoolDown = 0; // the time since last farm from the farmer
-        private double AnimationTmer = 0; // the time since last animation of the farmer
-
-        public override int Health { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        int ResourcesHeld = 0;
 
         /// <summary>
         /// constructor
@@ -80,8 +79,8 @@ namespace CityBuilderGame
         /// <param name="gT">the game time</param>
         private void UpdateAnimation(GameTime gT)
         {
-            AnimationTmer += gT.ElapsedGameTime.TotalSeconds;
-            if(AnimationTmer > 0.30f)
+            animationTimer += gT.ElapsedGameTime.TotalSeconds;
+            if(animationTimer > 0.30f)
             {
                 switch (state)
                 {
@@ -104,7 +103,7 @@ namespace CityBuilderGame
                         else animationFrame = 1;
                         break;
                 }
-                AnimationTmer = 0;
+                animationTimer = 0;
             }
             
         }
@@ -114,17 +113,19 @@ namespace CityBuilderGame
         /// </summary>
         /// <param name="gT">the game time</param>
         /// <param name="Tm"> the building map</param>
-        public new void Update(GameTime gT, BasicTilemap Tm)
+        public new void Update(GameTime gT, BasicTilemap Tm, out int NewResources)
         {
+            NewResources = 0;
             switch (state)
             {
                 case FarmerState.Idle:
                     // Find the next farm location and update state to "Farming"
                     curfarmLocation = FindNextFarmLocation(Tm);
                     dest = curfarmLocation;
+                    if (home == curfarmLocation) curfarmLocation = Vector2.Zero;
                     UpdateAnimation(gT);
                     if (Position != curfarmLocation) state = FarmerState.GoingtoFarm;
-                    else state = FarmerState.Farming;
+                    else if (curfarmLocation == Position)state = FarmerState.Farming;
                     break;
 
                 case FarmerState.Farming:
@@ -136,6 +137,7 @@ namespace CityBuilderGame
                         FarmTile(curfarmLocation, Tm);
                         state = FarmerState.ReturningHome;
                         FarmingCoolDown = 0;
+                        ResourcesHeld = 1;
                     }
                     break;
 
@@ -147,7 +149,13 @@ namespace CityBuilderGame
                         base.Update(gT, Tm, grid);
                         UpdateAnimation(gT);
                         // If the farmer reaches home, update state to "Idle"
-                        if (Position == home){state = FarmerState.Idle;}
+                        if (Position == home)
+                        {
+                            state = FarmerState.Idle;
+
+                            NewResources += ResourcesHeld;
+                            ResourcesHeld = 0;
+                        }
                     }
                     else{FindHome();}
                     
@@ -161,6 +169,7 @@ namespace CityBuilderGame
                         state = FarmerState.Idle;
                     }
                     break;
+            
             }
         }
 

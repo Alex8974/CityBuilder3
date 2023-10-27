@@ -14,6 +14,8 @@ using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
 using CityBuilderGame;
 using System.Collections.Generic;
+using System.Xml.Schema;
+using System.Diagnostics.Eventing.Reader;
 
 namespace ExampleGame
 {
@@ -42,8 +44,10 @@ namespace ExampleGame
         private Camera camera;
         BuildingScreen buildingScreen;
         StartScreen startScreen;
+        ControlScreen controlScreen;
 
         private List<Farmer> farmers;
+        private int TotalFood;
 
 
         public CityBuilderGame()
@@ -60,7 +64,8 @@ namespace ExampleGame
             pen = new penguin();
             farmers = new();
             buildingScreen = new BuildingScreen(farmers, Content);
-            startScreen = new StartScreen();            
+            startScreen = new StartScreen();
+            controlScreen = new();
 
             base.Initialize();
         }
@@ -153,7 +158,11 @@ namespace ExampleGame
 
                     if (curkeyboardstate.IsKeyDown(Keys.B) && prevkeyboardstate.IsKeyUp(Keys.B)) clickState = ClickState.Building;
                     pen.Update(gameTime, _tilemap, grid);
-                    foreach (Farmer f in farmers) f.Update(gameTime, buildingmap);
+                    foreach (Farmer f in farmers)
+                    {
+                        f.Update(gameTime, buildingmap, out int hold);
+                        TotalFood += hold;
+                    }
 
                 }
 
@@ -250,6 +259,8 @@ namespace ExampleGame
             _spriteBatch.End();
             base.Draw(gameTime);
 
+
+
             _spriteBatch.Begin();
             if (gameScreens == GameScreens.Start) { startScreen.Draw(gameTime, _spriteBatch, font); }
             else if (gameScreens == GameScreens.Running)
@@ -257,6 +268,10 @@ namespace ExampleGame
                 _spriteBatch.DrawString(font, $"Current action state: {clickState} ", new Vector2(220, 50), Color.Black, 0, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
                 if (clickState == ClickState.Building) buildingScreen.Draw(gameTime, _spriteBatch, font);
             }
+            else if (gameScreens == GameScreens.Controls) controlScreen.Draw(_spriteBatch, font);
+            _spriteBatch.DrawString(font, $"Food : {TotalFood} ", new Vector2(700, 10), Color.Black, 0, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+            
+
 
             _spriteBatch.End();
         }
