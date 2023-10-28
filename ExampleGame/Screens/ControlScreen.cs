@@ -31,7 +31,7 @@ namespace ExampleGame.Screens
             sb.DrawString(f, "-While in building mode press 'p' to place farmer", new Vector2(50, 140), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
             sb.DrawString(f, "-Use the arrow keys to move the screen", new Vector2(50, 170), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
             sb.DrawString(f, "-WASD are used to move the penguin (you)", new Vector2(50, 200), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
-            sb.DrawString(f, "-", new Vector2(50, 230), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
+            sb.DrawString(f, "-when exiting press the 'esc' key to save your data", new Vector2(50, 230), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
         }
     }
 }

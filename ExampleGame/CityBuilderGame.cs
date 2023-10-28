@@ -48,7 +48,6 @@ namespace ExampleGame
         private List<Farmer> farmers;
         private int TotalFood;
 
-
         public CityBuilderGame()
         {
             _graphics = new GraphicsDeviceManager(this);
