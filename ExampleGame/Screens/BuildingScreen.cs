@@ -17,14 +17,20 @@ namespace ExampleGame.Screens
     {
         BuildingOptions buildingOptions;
         List<Farmer> farmers;
+        List<Lumberjack> lumberjacks;
         ContentManager content;
+        Texture2D t;
+        Texture2D boxTexture;
 
         bool deleteMode = false;
-        public BuildingScreen(List<Farmer> f, ContentManager c)
+        public BuildingScreen(List<Farmer> f, List<Lumberjack> l, ContentManager c)
         {
             content = c;
             buildingOptions = (BuildingOptions) 20;
             farmers = f;
+            lumberjacks = l;
+            t = c.Load<Texture2D>("tilemapCastleGame1.4");
+            boxTexture = c.Load<Texture2D>("SelectionBox");
         }
 
         public void Initilize()
@@ -38,6 +44,7 @@ namespace ExampleGame.Screens
             int my = (ms.Position.Y + (int)c.Position.Y - d.Viewport.Height / 2) / bm.TileHeight;
 
             if (kbs.IsKeyDown(Keys.P) && !prevkbs.IsKeyDown(Keys.P)) farmers.Add(new Farmer(new Vector2(mx, my), g, content, bm));
+            if (kbs.IsKeyDown(Keys.L) && !prevkbs.IsKeyDown(Keys.L)) lumberjacks.Add(new Lumberjack(new Vector2(mx, my), g, content, bm));
 
             if (kbs.IsKeyDown(Keys.X) && !prevkbs.IsKeyDown(Keys.X)) deleteMode = !deleteMode;
             if (deleteMode == false)
@@ -96,8 +103,180 @@ namespace ExampleGame.Screens
         }
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, SpriteFont font)
         {
+            
             if(!deleteMode)spriteBatch.DrawString(font, $"Click to build : {buildingOptions} ", new Vector2(280, 100), Color.Black, 0, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
             else spriteBatch.DrawString(font, "Click to Delete Item", new Vector2(250, 100), Color.DarkRed, 0, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+
+            Vector2 size = new Vector2(4,4);
+            switch (buildingOptions)
+            {
+                case BuildingOptions.FenceFront:
+                    #region front fence
+                    spriteBatch.Draw(boxTexture, new Vector2(0 * 42 + 10, 10), new Rectangle(0 * 32, 1 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(0 * 42 + 13, 10), new Rectangle(4 * 32, 2 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(1 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(1 * 42 + 10, 10)+size, new Rectangle(0, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(2 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(2 * 42 + 10, 10) + size, new Rectangle(1 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(3 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(3 * 42 + 10, 10) + size, new Rectangle(2 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(4 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(4 * 42 + 10, 10) + size, new Rectangle(3 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(5 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(5 * 42 + 10, 10) + size, new Rectangle(4 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(6 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(6 * 42 + 10, 10) + size, new Rectangle(3 * 32, 4 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(7 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(7 * 42 + 10, 10) + size, new Rectangle(4 * 32, 6 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    #endregion
+                    break;
+                case BuildingOptions.FenceBottomRightCorner:
+                    spriteBatch.Draw(boxTexture, new Vector2(0 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(0 * 42 + 13, 10) + size, new Rectangle(4 * 32, 2 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(1 * 42 + 10, 10), new Rectangle(0 * 32, 1 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(1 * 42 + 10, 10) + size, new Rectangle(0, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(2 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(2 * 42 + 10, 10) + size, new Rectangle(1 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(3 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(3 * 42 + 10, 10) + size, new Rectangle(2 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(4 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(4 * 42 + 10, 10) + size, new Rectangle(3 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(5 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(5 * 42 + 10, 10) + size, new Rectangle(4 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(6 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(6 * 42 + 10, 10) + size, new Rectangle(3 * 32, 4 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(7 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(7 * 42 + 10, 10) + size, new Rectangle(4 * 32, 6 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    break;
+                case BuildingOptions.FenceUpRightSide:
+                    spriteBatch.Draw(boxTexture, new Vector2(0 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(0 * 42 + 13, 10) + size, new Rectangle(4 * 32, 2 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(1 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(1 * 42 + 10, 10) + size, new Rectangle(0, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(2 * 42 + 10, 10), new Rectangle(0 * 32, 1 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(2 * 42 + 10, 10) + size, new Rectangle(1 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(3 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(3 * 42 + 10, 10) + size, new Rectangle(2 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(4 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(4 * 42 + 10, 10) + size, new Rectangle(3 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(5 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(5 * 42 + 10, 10) + size, new Rectangle(4 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(6 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(6 * 42 + 10, 10) + size, new Rectangle(3 * 32, 4 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(7 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(7 * 42 + 10, 10) + size, new Rectangle(4 * 32, 6 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    break;
+                case BuildingOptions.FenceBottomLeftCorner:
+                    spriteBatch.Draw(boxTexture, new Vector2(0 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(0 * 42 + 13, 10) + size, new Rectangle(4 * 32, 2 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(1 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(1 * 42 + 10, 10) + size, new Rectangle(0, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(2 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(2 * 42 + 10, 10) + size, new Rectangle(1 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(3 * 42 + 10, 10), new Rectangle(0 * 32, 1 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(3 * 42 + 10, 10) + size, new Rectangle(2 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(4 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(4 * 42 + 10, 10) + size, new Rectangle(3 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(5 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(5 * 42 + 10, 10) + size, new Rectangle(4 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(6 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(6 * 42 + 10, 10) + size, new Rectangle(3 * 32, 4 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(7 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(7 * 42 + 10, 10) + size, new Rectangle(4 * 32, 6 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    break;
+                case BuildingOptions.FenceUpLeftSide:
+                    spriteBatch.Draw(boxTexture, new Vector2(0 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(0 * 42 + 13, 10) + size, new Rectangle(4 * 32, 2 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(1 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(1 * 42 + 10, 10) + size, new Rectangle(0, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(2 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(2 * 42 + 10, 10) + size, new Rectangle(1 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(3 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(3 * 42 + 10, 10) + size, new Rectangle(2 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(4 * 42 + 10, 10), new Rectangle(0 * 32, 1 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(4 * 42 + 10, 10) + size, new Rectangle(3 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(5 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(5 * 42 + 10, 10) + size, new Rectangle(4 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(6 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(6 * 42 + 10, 10) + size, new Rectangle(3 * 32, 4 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(7 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(7 * 42 + 10, 10) + size, new Rectangle(4 * 32, 6 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    break;
+                case BuildingOptions.BlueHouse:
+                    spriteBatch.Draw(boxTexture, new Vector2(0 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(0 * 42 + 13, 10) + size, new Rectangle(4 * 32, 2 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(1 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(1 * 42 + 10, 10) + size, new Rectangle(0, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(2 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(2 * 42 + 10, 10) + size, new Rectangle(1 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(3 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(3 * 42 + 10, 10) + size, new Rectangle(2 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(4 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(4 * 42 + 10, 10) + size, new Rectangle(3 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(5 * 42 + 10, 10), new Rectangle(0 * 32, 1 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(5 * 42 + 10, 10) + size, new Rectangle(4 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(6 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(6 * 42 + 10, 10) + size, new Rectangle(3 * 32, 4 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(7 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(7 * 42 + 10, 10) + size, new Rectangle(4 * 32, 6 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    break;
+                case BuildingOptions.FullCrops:
+                    spriteBatch.Draw(boxTexture, new Vector2(0 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(0 * 42 + 13, 10) + size, new Rectangle(4 * 32, 2 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(1 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(1 * 42 + 10, 10) + size, new Rectangle(0, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(2 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(2 * 42 + 10, 10) + size, new Rectangle(1 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(3 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(3 * 42 + 10, 10) + size, new Rectangle(2 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(4 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(4 * 42 + 10, 10) + size, new Rectangle(3 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(5 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(5 * 42 + 10, 10) + size, new Rectangle(4 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(6 * 42 + 10, 10), new Rectangle(0 * 32, 1 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(6 * 42 + 10, 10) + size, new Rectangle(3 * 32, 4 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(7 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(7 * 42 + 10, 10) + size, new Rectangle(4 * 32, 6 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    break;
+                case BuildingOptions.CropsEmpty:
+                    spriteBatch.Draw(boxTexture, new Vector2(0 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(0 * 42 + 13, 10) + size, new Rectangle(4 * 32, 2 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(1 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(1 * 42 + 10, 10) + size, new Rectangle(0, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(2 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(2 * 42 + 10, 10) + size, new Rectangle(1 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(3 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(3 * 42 + 10, 10) + size, new Rectangle(2 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(4 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(4 * 42 + 10, 10) + size, new Rectangle(3 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(5 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(5 * 42 + 10, 10) + size, new Rectangle(4 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(6 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(6 * 42 + 10, 10) + size, new Rectangle(3 * 32, 4 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(7 * 42 + 10, 10), new Rectangle(0 * 32, 1 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(7 * 42 + 10, 10) + size, new Rectangle(4 * 32, 6 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    break;
+                default:
+                    spriteBatch.Draw(boxTexture, new Vector2(0 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(0 * 42 + 13, 10) + size, new Rectangle(4 * 32, 2 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(1 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(1 * 42 + 10, 10) + size, new Rectangle(0, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(2 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(2 * 42 + 10, 10) + size, new Rectangle(1 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(3 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(3 * 42 + 10, 10) + size, new Rectangle(2 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(4 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(4 * 42 + 10, 10) + size, new Rectangle(3 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(5 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(5 * 42 + 10, 10) + size, new Rectangle(4 * 32, 3 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(6 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(6 * 42 + 10, 10) + size, new Rectangle(3 * 32, 4 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(boxTexture, new Vector2(7 * 42 + 10, 10), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(t, new Vector2(7 * 42 + 10, 10) + size, new Rectangle(4 * 32, 6 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                    break;
+            }
+            
+            //spriteBatch.Draw(t, new Vector2(0, 0), source, Color.White, 0f, new Vector2(0, 0), SpriteEffects.None, 0);
         }
     }
 }

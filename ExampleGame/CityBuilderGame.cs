@@ -46,7 +46,9 @@ namespace ExampleGame
         ControlScreen controlScreen;
 
         private List<Farmer> farmers;
+        private List<Lumberjack> lumberjacks;
         private int TotalFood;
+        private int TotalWood;
 
         public CityBuilderGame()
         {
@@ -61,7 +63,8 @@ namespace ExampleGame
             // TODO: Add your initialization logic here
             pen = new penguin();
             farmers = new();
-            buildingScreen = new BuildingScreen(farmers, Content);
+            lumberjacks = new();
+            buildingScreen = new BuildingScreen(farmers, lumberjacks, Content);
             startScreen = new StartScreen();
             controlScreen = new();
             startScreen.Initilze(Content);
@@ -161,6 +164,11 @@ namespace ExampleGame
                         f.Update(gameTime, buildingmap, out int hold);
                         TotalFood += hold;
                     }
+                    foreach(Lumberjack l in lumberjacks)
+                    {
+                        l.Update(gameTime, buildingmap, out int hold);
+                        TotalWood += hold;
+                    }
 
                 }
 
@@ -254,6 +262,7 @@ namespace ExampleGame
             
             if(gameScreens != GameScreens.Controls )buildingmap.Draw(gameTime, _spriteBatch);
             foreach (Farmer f in farmers) f.Draw(_spriteBatch, gameTime);
+            foreach (Lumberjack l in lumberjacks) l.Draw(_spriteBatch, gameTime);
             _spriteBatch.End();
             base.Draw(gameTime);
 
@@ -268,9 +277,7 @@ namespace ExampleGame
             }
             else if (gameScreens == GameScreens.Controls) controlScreen.Draw(_spriteBatch, font);
             if(gameScreens == GameScreens.Running)_spriteBatch.DrawString(font, $"Food : {TotalFood} ", new Vector2(700, 10), Color.Black, 0, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
-            
-
-
+            if(gameScreens == GameScreens.Running)_spriteBatch.DrawString(font, $"Wood : {TotalWood} ", new Vector2(700, 30), Color.Black, 0, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
             _spriteBatch.End();
         }
     }
