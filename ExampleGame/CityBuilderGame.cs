@@ -306,8 +306,8 @@ namespace ExampleGame
                 }
                 writer.WriteLine(fs);
 
-                int lumberCount = farmers.Count;
-                string ls = $"{farmerCount}";
+                int lumberCount = lumberjacks.Count;
+                string ls = $"{lumberCount}";
                 foreach (Lumberjack l in lumberjacks)
                 {
                     ls += $":{l.home.X},{l.home.Y}/";
