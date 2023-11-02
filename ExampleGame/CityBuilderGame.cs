@@ -39,6 +39,7 @@ namespace ExampleGame
         Grid grid;
         ClickState clickState;
         GameScreens gameScreens;
+        Day days;
 
         private Camera camera;
         BuildingScreen buildingScreen;
@@ -47,8 +48,8 @@ namespace ExampleGame
 
         private List<Farmer> farmers;
         private List<Lumberjack> lumberjacks;
-        private int TotalFood;
-        private int TotalWood;
+        private int TotalFood = 10;
+        private int TotalWood = 10;
 
         public CityBuilderGame()
         {
@@ -67,6 +68,7 @@ namespace ExampleGame
             buildingScreen = new BuildingScreen(farmers, lumberjacks, Content);
             startScreen = new StartScreen();
             controlScreen = new();
+            days = new(Content);
             startScreen.Initilze(Content);
             base.Initialize();
         }
@@ -128,7 +130,7 @@ namespace ExampleGame
         /// <param name="gameTime">the game time</param>
         protected override void Update(GameTime gameTime)
         {
-
+            TotalFood = days.Update(gameTime, TotalFood, farmers, lumberjacks);
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
                 CloseGame();
@@ -151,7 +153,7 @@ namespace ExampleGame
 
 
                 //changes to and from building and moving
-                if (clickState == ClickState.Building) clickState = buildingScreen.Update(gameTime, curmouseState, buildingmap, curkeyboardstate, prevkeyboardstate, camera, _graphics.GraphicsDevice, grid);
+                if (clickState == ClickState.Building) clickState = buildingScreen.Update(gameTime, curmouseState, buildingmap, curkeyboardstate, prevkeyboardstate, camera, _graphics.GraphicsDevice, grid,ref TotalFood,ref TotalWood);
                 else if (clickState == ClickState.Move)
                 {
                     //sets the destination location
@@ -161,15 +163,16 @@ namespace ExampleGame
                     pen.Update(gameTime, _tilemap, grid);
                     foreach (Farmer f in farmers)
                     {
+                        if (days.NightOrDay == false) f.state = Farmer.FarmerState.ReturningHome;
                         f.Update(gameTime, buildingmap, out int hold);
                         TotalFood += hold;
                     }
                     foreach(Lumberjack l in lumberjacks)
                     {
+                        if (days.NightOrDay == false) l.state = Lumberjack.LumberjackState.ReturningHome;
                         l.Update(gameTime, buildingmap, out int hold);
                         TotalWood += hold;
                     }
-
                 }
 
                 #region move arrowkeys
@@ -257,10 +260,13 @@ namespace ExampleGame
 
             // TODO: Add your drawing code here
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, camera.Transform);
-            if(gameScreens != GameScreens.Controls) _tilemap.Draw(gameTime, _spriteBatch);
-            if (gameScreens != GameScreens.Controls) _spriteBatch.Draw(pen.texture, pen.Position, null, Color.White, 0, new Vector2(0, 0), 0.5f, SpriteEffects.None, 0);
-            
-            if(gameScreens != GameScreens.Controls )buildingmap.Draw(gameTime, _spriteBatch);
+            if (gameScreens != GameScreens.Controls)
+            {
+                _tilemap.Draw(gameTime, _spriteBatch);
+                _spriteBatch.Draw(pen.texture, pen.Position, null, Color.White, 0, new Vector2(0, 0), 0.5f, SpriteEffects.None, 0);
+                buildingmap.Draw(gameTime, _spriteBatch);
+            }
+
             foreach (Farmer f in farmers) f.Draw(_spriteBatch, gameTime);
             foreach (Lumberjack l in lumberjacks) l.Draw(_spriteBatch, gameTime);
             _spriteBatch.End();
@@ -276,8 +282,13 @@ namespace ExampleGame
                 if (clickState == ClickState.Building) buildingScreen.Draw(gameTime, _spriteBatch, font);
             }
             else if (gameScreens == GameScreens.Controls) controlScreen.Draw(_spriteBatch, font);
-            if(gameScreens == GameScreens.Running)_spriteBatch.DrawString(font, $"Food : {TotalFood} ", new Vector2(700, 10), Color.Black, 0, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
-            if(gameScreens == GameScreens.Running)_spriteBatch.DrawString(font, $"Wood : {TotalWood} ", new Vector2(700, 30), Color.Black, 0, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+            
+            if(gameScreens == GameScreens.Running)
+            {
+                days.Draw(gameTime, _spriteBatch, font, GraphicsDevice.Viewport);
+                _spriteBatch.DrawString(font, $"Food : {TotalFood} ", new Vector2(700, 10), Color.Black, 0, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                _spriteBatch.DrawString(font, $"Wood : {TotalWood} ", new Vector2(700, 30), Color.Black, 0, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+            }
             _spriteBatch.End();
         }
     }

@@ -18,7 +18,7 @@ namespace CityBuilderGame
          
 
         // Define lumberjack states
-        private enum LumberjackState
+        public enum LumberjackState
         {
             Idle,
             ChoppingWood,
@@ -26,7 +26,7 @@ namespace CityBuilderGame
             ReturningHome
         }
 
-        private LumberjackState state = LumberjackState.Idle; // Holds the current farmer task
+        public LumberjackState state = LumberjackState.Idle; // Holds the current farmer task
         private Vector2 curTreeLocation; // Store the current farm location
         private Grid grid; // Reference to the grid of nodes of water
         private BasicTilemap bm; // the building map that is passed in from the constructor

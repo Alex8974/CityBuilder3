@@ -18,7 +18,7 @@ namespace CityBuilderGame
          
 
         // Define farmer states
-        private enum FarmerState
+        public enum FarmerState
         {
             Idle,
             Farming,
@@ -26,7 +26,7 @@ namespace CityBuilderGame
             ReturningHome
         }
 
-        private FarmerState state = FarmerState.Idle; // Holds the current farmer task
+        public FarmerState state = FarmerState.Idle; // Holds the current farmer task
         private Vector2 curfarmLocation; // Store the current farm location
         private Grid grid; // Reference to the grid of nodes of water
         private BasicTilemap bm; // the building map that is passed in from the constructor

@@ -186,7 +186,7 @@ namespace ExampleGame
                 {
                     Node targetNode = path[currentNodeIndex];
 
-                    // Check if the penguin has reached the target node
+                    // Check if the person has reached the target node
                     if (this.Position == new Vector2(targetNode.X*Tm.TileWidth, targetNode.Y*Tm.TileHeight))
                     {
                         // Move to the next node in the path
@@ -194,7 +194,6 @@ namespace ExampleGame
                     }
                     else
                     {
-                        // Use your custom Move method to move the penguin
                         Move(gT, new int[] { targetNode.X, targetNode.Y }, Tm);
                         walktimer = 0;
                     }
