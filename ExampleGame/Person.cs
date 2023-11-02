@@ -17,7 +17,7 @@ namespace ExampleGame
         List<Node> path;
         int currentNodeIndex = 0;
 
-        protected Vector2 home;
+        public Vector2 home { get; set; }
 
         /// <summary>
         /// the time between each animaitons

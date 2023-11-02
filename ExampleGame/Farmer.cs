@@ -204,6 +204,8 @@ namespace CityBuilderGame
             int farmerGridX = (int)(Position.X / Tm.TileWidth);
             int farmerGridY = (int)(Position.Y / Tm.TileHeight);
 
+            if (farmerGridX > 100) farmerGridX = farmerGridX / Tm.TileWidth;
+            if (farmerGridY > 100) farmerGridY = farmerGridY / Tm.TileWidth;
             // Assuming you have a list of farmable locations, convert them to grid coordinates
             // or use grid coordinates directly if they are in grid coordinates
             List<Vector2> farmableLocations = new List<Vector2>();

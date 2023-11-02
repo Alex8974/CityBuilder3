@@ -73,13 +73,15 @@ namespace ExampleGame
             base.Initialize();
         }
 
+        /// <summary>
+        /// loads the content of the game
+        /// </summary>
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             _tilemap = Content.Load<BasicTilemap>("map4");
             buildingmap = Content.Load<BasicTilemap>("map5");
-            LoadGame();
             pen.Position = new Vector2(6 * _tilemap.TileWidth, 6 * _tilemap.TileHeight);
             
             // TODO: use this.Content to load your game content here
@@ -89,6 +91,8 @@ namespace ExampleGame
             camera = new Camera(GraphicsDevice.Viewport, _tilemap.MapWidth * _tilemap.TileWidth, _tilemap.MapHeight * _tilemap.TileHeight);
 
             font = Content.Load<SpriteFont>("File");
+            LoadGame();
+
             pen.texture = Content.Load<Texture2D>("Penguin64pxT50pxW");
         }
         
@@ -106,7 +110,8 @@ namespace ExampleGame
                 string boxes = lines[0];
                 string[] tiles = boxes.Split(',');
 
-                for(int i = 0; i < buildingmap.TileIndices.Length -1; i++)
+                #region[0] the tilemap
+                for (int i = 0; i < buildingmap.TileIndices.Length -1; i++)
                 {
                     if(int.TryParse(tiles[i], out int tileIndex))
                     {
@@ -117,6 +122,51 @@ namespace ExampleGame
                         buildingmap.TileIndices[i] = 0;
                     }
                 }
+                #endregion
+                
+                #region[1] the farmers
+                string[] subline = lines[1].Split(':');
+                for(int i = 0; i < Int32.Parse(subline[0]); i++)
+                {
+                    // 0 is the home 1 is the position
+                    string[] subsubline = subline[i+1].Split('/');
+                    string[] homesubline = subsubline[0].Split(',');
+                    string[] possubline = subsubline[1].Split(',');
+                    Vector2 pos = new Vector2(Int32.Parse(possubline[0]), Int32.Parse(possubline[1]));
+                    Vector2 home = new Vector2(Int32.Parse(homesubline[0]), Int32.Parse(homesubline[1]));
+                    Farmer f = new Farmer(pos, grid, Content, buildingmap);
+                    f.home = home;
+                    farmers.Add(f);
+                }
+                #endregion
+
+                #region[2] the wood choppers
+                string[] ssubline = lines[2].Split(':');
+                for (int i = 0; i < Int32.Parse(ssubline[0]); i++)
+                {
+                    // 0 is the home 1 is the position
+                    string[] subsubline = ssubline[i + 1].Split('/');
+                    string[] homesubline = subsubline[0].Split(',');
+                    string[] possubline = subsubline[1].Split(',');
+                    Vector2 pos = new Vector2(Int32.Parse(possubline[0]), Int32.Parse(possubline[1]));
+                    Vector2 home = new Vector2(Int32.Parse(homesubline[0]), Int32.Parse(homesubline[1]));
+                    Lumberjack f = new Lumberjack(pos, grid, Content, buildingmap);
+                    f.home = home;
+                    lumberjacks.Add(f);
+                }
+                #endregion
+
+                #region[3] TotalFood
+                TotalFood = Int32.Parse(lines[3]);
+                #endregion
+
+                #region[4] TotalWood
+                TotalWood = Int32.Parse(lines[4]);
+                #endregion
+
+                #region[5] current day
+                days.CurrentDay = Int32.Parse(lines[5]);
+                #endregion
             }
             catch
             {
@@ -160,7 +210,7 @@ namespace ExampleGame
                     if (curmouseState.LeftButton == ButtonState.Pressed) { pen.dest = new Vector2(tileX * _tilemap.TileWidth, tileY * _tilemap.TileHeight); }
 
                     if (curkeyboardstate.IsKeyDown(Keys.B) && prevkeyboardstate.IsKeyUp(Keys.B)) clickState = ClickState.Building;
-                    pen.Update(gameTime, _tilemap, grid);
+                    //pen.Update(gameTime, _tilemap, grid);
                     foreach (Farmer f in farmers)
                     {
                         if (days.NightOrDay == false) f.state = Farmer.FarmerState.ReturningHome;
@@ -247,6 +297,26 @@ namespace ExampleGame
             using (StreamWriter writer = new StreamWriter(filePath, true))
             {
                 writer.WriteLine(s);
+                int farmerCount = farmers.Count;
+                string fs = $"{farmerCount}";
+                foreach(Farmer f in farmers)
+                {
+                    fs += $":{f.home.X},{f.home.Y}/";
+                    fs += $"{f.Position.X / buildingmap.TileWidth},{f.Position.Y / buildingmap.TileHeight}";
+                }
+                writer.WriteLine(fs);
+
+                int lumberCount = farmers.Count;
+                string ls = $"{farmerCount}";
+                foreach (Lumberjack l in lumberjacks)
+                {
+                    ls += $":{l.home.X},{l.home.Y}/";
+                    ls += $"{l.Position.X / buildingmap.TileWidth},{l.Position.Y / buildingmap.TileHeight}";
+                }
+                writer.WriteLine(ls);
+                writer.WriteLine(TotalFood);
+                writer.WriteLine(TotalWood);
+                writer.WriteLine(days.CurrentDay);
             }
         }
 

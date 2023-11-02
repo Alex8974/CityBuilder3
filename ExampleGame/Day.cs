@@ -22,7 +22,7 @@ namespace ExampleGame
         /// <summary>
         /// how long the day lasts
         /// </summary>
-        public const double LENGTHOFDAY = 30.0f;
+        public const double LENGTHOFDAY = 45.0f;
 
         /// <summary>
         /// how long the night lasts

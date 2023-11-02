@@ -47,7 +47,7 @@ namespace CityBuilderGame
             Position = new Vector2(pos.X * 32, pos.Y * 32);
             this.bm = bm;
             FindHome();
-            texture = c.Load<Texture2D>("Farmer");
+            texture = c.Load<Texture2D>("WoodChopper");
             // Initialize other properties
         }
 
