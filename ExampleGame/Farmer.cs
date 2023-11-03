@@ -48,6 +48,7 @@ namespace CityBuilderGame
             this.bm = bm;
             FindHome();
             texture = c.Load<Texture2D>("Farmer");
+            DrawPosition = Position;
             // Initialize other properties
         }
 
@@ -172,9 +173,7 @@ namespace CityBuilderGame
                     if (curfarmLocation != Position) base.Update(gT, Tm, grid);
                     else if(curfarmLocation == Position) { state = FarmerState.Farming; }
                     else
-                    {
-                        state = FarmerState.Idle;
-                    }
+                    { state = FarmerState.Idle;}
                     break;
             
             }
@@ -284,7 +283,8 @@ namespace CityBuilderGame
         /// <param name="gT">game time</param>
         public override void Draw(SpriteBatch s, GameTime gT)
         {
-            s.Draw(texture, new Vector2(Position.X-2, Position.Y), new Rectangle(animationFrame*size,0,size,size), Color.White, 0, new Vector2(0, 0), 1.25f, SpriteEffects.None, 0);
+            Console.WriteLine($"{DrawPosition.Y}");
+            s.Draw(texture, new Vector2(DrawPosition.X-2, DrawPosition.Y), new Rectangle(animationFrame*size,0,size,size), Color.White, 0, new Vector2(0, 0), 1.25f, SpriteEffects.None, 0);
         }
     }
 

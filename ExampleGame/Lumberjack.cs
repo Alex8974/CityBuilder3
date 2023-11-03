@@ -27,11 +27,11 @@ namespace CityBuilderGame
         }
 
         public LumberjackState state = LumberjackState.Idle; // Holds the current farmer task
-        private Vector2 curTreeLocation; // Store the current farm location
+        private Vector2 curTreeLocation; // Store the current tree location
         private Grid grid; // Reference to the grid of nodes of water
         private BasicTilemap bm; // the building map that is passed in from the constructor
 
-        private double ChoppingCoolDown = 0; // the time since last farm from the farmer
+        private double ChoppingCoolDown = 0; // the time since last chop from the lumberjack
         int ResourcesHeld = 0;
 
         /// <summary>

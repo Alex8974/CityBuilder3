@@ -340,7 +340,6 @@ namespace ExampleGame
             foreach (Farmer f in farmers) f.Draw(_spriteBatch, gameTime);
             foreach (Lumberjack l in lumberjacks) l.Draw(_spriteBatch, gameTime);
             _spriteBatch.End();
-            base.Draw(gameTime);
 
 
 
@@ -348,7 +347,7 @@ namespace ExampleGame
             if (gameScreens == GameScreens.Start) { startScreen.Draw(gameTime, _spriteBatch, font); }
             else if (gameScreens == GameScreens.Running)
             {
-                _spriteBatch.DrawString(font, $"Current action state: {clickState} ", new Vector2(220, 50), Color.Black, 0, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                _spriteBatch.DrawString(font, $"Currently: {clickState} ", new Vector2(250, 55), Color.Black, 0, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
                 if (clickState == ClickState.Building) buildingScreen.Draw(gameTime, _spriteBatch, font);
             }
             else if (gameScreens == GameScreens.Controls) controlScreen.Draw(_spriteBatch, font);
@@ -360,6 +359,9 @@ namespace ExampleGame
                 _spriteBatch.DrawString(font, $"Wood : {TotalWood} ", new Vector2(700, 30), Color.Black, 0, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
             }
             _spriteBatch.End();
+
+            base.Draw(gameTime);
+
         }
     }
 }

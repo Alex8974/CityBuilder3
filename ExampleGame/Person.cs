@@ -72,6 +72,14 @@ namespace ExampleGame
         /// </summary>
         public Vector2 Position { get; set; }
 
+        /// <summary>
+        /// the position to draw when moving
+        /// </summary>
+        public Vector2 DrawPosition { get; set; }
+
+        /// <summary>
+        /// the destination
+        /// </summary>
         public Vector2 dest { get; set; }
 
         /// <summary>
@@ -104,6 +112,7 @@ namespace ExampleGame
 
                 // Update the character's position based on its speed
                 Position += direction * Speed;
+                DrawPosition = Position;
 
                 // Handle collision detection and other logic as needed.
             }
@@ -133,7 +142,7 @@ namespace ExampleGame
 
             // Update the character's position based on its speed
             Position += direction * Speed;
-
+            DrawPosition = Position;
             // Handle collision detection and other logic as needed.
         }
         public void Move(GameTime gT, Vector2 des, BasicTilemap Tm)
@@ -160,7 +169,7 @@ namespace ExampleGame
 
             // Update the character's position based on its speed
             Position += direction * Speed;
-
+            DrawPosition = Position;
             // Handle collision detection and other logic as needed.
         }
 
@@ -180,25 +189,42 @@ namespace ExampleGame
         public void Update(GameTime gT, BasicTilemap Tm, Grid g)
         {
             walktimer += gT.ElapsedGameTime.TotalSeconds;
-            if (walktimer > WALKCOOLDOWN && dest != Position)
+            if (dest != Position)
             {
                 if (path != null && currentNodeIndex < path.Count)
                 {
+                    // the grid cordinates that you want to move to
                     Node targetNode = path[currentNodeIndex];
+                    // if they should move positions
+                    if(walktimer > WALKCOOLDOWN)
+                    {
+                        if (this.Position == new Vector2(targetNode.X * Tm.TileWidth, targetNode.Y * Tm.TileHeight))
+                        {
+                            // Move to the next node in the path
+                            currentNodeIndex++;
+                        }
+                        else
+                        {
+                            Move(gT, new int[] { targetNode.X, targetNode.Y }, Tm);
+                            currentNodeIndex++;
+                            walktimer = 0;
+                        }
+                    }
+                    else if(walktimer < WALKCOOLDOWN && path != null)
+                    {
 
+                        Node nextnode = path[currentNodeIndex];
+                        float percentage = (float)(walktimer / WALKCOOLDOWN);
+                        DrawPosition = new Vector2(
+                            MathHelper.Lerp(Position.X, nextnode.X * 32, (float)percentage),
+                            MathHelper.Lerp(Position.Y, nextnode.Y * 32, (float)percentage)
+                        );
+
+                    }
                     // Check if the person has reached the target node
-                    if (this.Position == new Vector2(targetNode.X*Tm.TileWidth, targetNode.Y*Tm.TileHeight))
-                    {
-                        // Move to the next node in the path
-                        currentNodeIndex++;
-                    }
-                    else
-                    {
-                        Move(gT, new int[] { targetNode.X, targetNode.Y }, Tm);
-                        walktimer = 0;
-                    }
+                   
                 }
-                else if( path != null && currentNodeIndex >= path.Count)
+                else if (path != null && currentNodeIndex >= path.Count)
                 {
                     currentNodeIndex = 0;
                     path = null;
@@ -215,6 +241,8 @@ namespace ExampleGame
                     }
                 }
             }
+            
+            
         }
 
         /// <summary>

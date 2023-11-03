@@ -31,7 +31,7 @@ namespace ExampleGame.Screens
         /// </summary>
         /// <param name="f">the list of famres</param>
         /// <param name="l">the list of lumberjacks</param>
-        /// <param name="c"></param>
+        /// <param name="c">the content manager</param>
         public BuildingScreen(List<Farmer> f, List<Lumberjack> l, ContentManager c)
         {
             content = c;
@@ -146,7 +146,7 @@ namespace ExampleGame.Screens
         }
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, SpriteFont font)
         {            
-            if(!deleteMode)spriteBatch.DrawString(font, $"Click to build : {buildingOptions} ", new Vector2(280, 100), Color.Black, 0, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+            if(!deleteMode)spriteBatch.DrawString(font, $"Click to build", new Vector2(280, 100), Color.Black, 0, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
             else spriteBatch.DrawString(font, "Click to Delete Item", new Vector2(250, 100), Color.DarkRed, 0, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
 
             Vector2 size = new Vector2(4,4);
