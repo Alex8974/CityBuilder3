@@ -33,6 +33,7 @@ namespace CityBuilderGame
 
         private double FarmingCoolDown = 0; // the time since last farm from the farmer
         int ResourcesHeld = 0;
+        public static List<Vector2> allFarmingLocations = new List<Vector2>();
 
         /// <summary>
         /// constructor
@@ -44,6 +45,16 @@ namespace CityBuilderGame
         public Farmer(Vector2 pos, Grid g, ContentManager c, BasicTilemap bm)
         {
             grid = g;
+            Position = new Vector2(pos.X * 32, pos.Y * 32);
+            this.bm = bm;
+            FindHome();
+            texture = c.Load<Texture2D>("Farmer");
+            DrawPosition = Position;
+            // Initialize other properties
+        }
+        public Farmer(Vector2 pos, ContentManager c, BasicTilemap bm)
+        {
+            grid = null;
             Position = new Vector2(pos.X * 32, pos.Y * 32);
             this.bm = bm;
             FindHome();
@@ -122,6 +133,7 @@ namespace CityBuilderGame
                 case FarmerState.Idle:
                     // Find the next farm location and update state to "Farming"
                     curfarmLocation = FindNextFarmLocation(Tm);
+                    allFarmingLocations.Add(curfarmLocation);
                     dest = curfarmLocation;
                     if (home == curfarmLocation) curfarmLocation = Vector2.Zero;
                     UpdateAnimation(gT);
@@ -139,11 +151,13 @@ namespace CityBuilderGame
                         state = FarmerState.ReturningHome;
                         FarmingCoolDown = 0;
                         ResourcesHeld = 1;
+                        allFarmingLocations.Remove(curfarmLocation);
                     }
                     break;
 
                 case FarmerState.ReturningHome:
                     // Move back to the home location
+                    
                     if (home != Vector2.Zero)
                     {
                         dest = home;
@@ -170,6 +184,10 @@ namespace CityBuilderGame
                     break;
                 case FarmerState.GoingtoFarm:
                     UpdateAnimation(gT);
+                    if (curfarmLocation == new Vector2(0, 0))
+                    {
+                        state = FarmerState.Idle;
+                    }
                     if (curfarmLocation != Position) base.Update(gT, Tm, grid);
                     else if(curfarmLocation == Position) { state = FarmerState.Farming; }
                     else
@@ -215,6 +233,12 @@ namespace CityBuilderGame
                 {
                     int row = ((i / Tm.MapWidth));
                     int col = ((i % Tm.MapWidth));
+
+                    if (allFarmingLocations.Contains(new Vector2(col * bm.TileHeight, row * bm.TileWidth)))
+                    {
+                        continue; // Skip this location
+                    }
+
                     farmableLocations.Add(new Vector2(col, row));
                 }
             }

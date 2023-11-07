@@ -19,6 +19,7 @@ using System.Diagnostics.Eventing.Reader;
 using LightingAndCamerasExample;
 using Basic3DExample;
 using SharpDX.Direct2D1.Effects;
+using ExampleGame.BiggerTileMapGenerator;
 
 namespace ExampleGame
 {
@@ -32,11 +33,11 @@ namespace ExampleGame
         private SpriteBatch _spriteBatch;
         private BasicTilemap _tilemap;
         private BasicTilemap buildingmap;
+        private TileMapGenerator generator;
         private SpriteFont font;
 
         private KeyboardState prevkeyboardstate;
         private KeyboardState curkeyboardstate;
-        private penguin pen;
         private MouseState curmouseState;
         private MouseState prevmouseState;
         Grid grid;
@@ -68,10 +69,8 @@ namespace ExampleGame
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            pen = new penguin();
             farmers = new();
             lumberjacks = new();
-            buildingScreen = new BuildingScreen(farmers, lumberjacks, Content);
             startScreen = new StartScreen();
             controlScreen = new();
             days = new(Content);
@@ -89,19 +88,15 @@ namespace ExampleGame
 
             _tilemap = Content.Load<BasicTilemap>("map4");
             buildingmap = Content.Load<BasicTilemap>("map5");
-            pen.Position = new Vector2(6 * _tilemap.TileWidth, 6 * _tilemap.TileHeight);
+            buildingScreen = new BuildingScreen(farmers, lumberjacks, Content, buildingmap);
+
             Moon = new Crate(this, CrateType.Slats, Matrix.CreateTranslation(1, 1, 1));
-            //Moon = new(this);
-            // TODO: use this.Content to load your game content here
-            //_tilemap.LoadContent(Content);
-            //buildingmap.LoadContent(Content);
+
             grid = new Grid(_tilemap.MapWidth, _tilemap.MapHeight, _tilemap, 0);
             camera = new Camera(GraphicsDevice.Viewport, _tilemap.MapWidth * _tilemap.TileWidth, _tilemap.MapHeight * _tilemap.TileHeight);
 
             font = Content.Load<SpriteFont>("File");
             LoadGame();
-
-            pen.texture = Content.Load<Texture2D>("Penguin64pxT50pxW");
         }
         
         /// <summary>
@@ -190,7 +185,7 @@ namespace ExampleGame
         {
             MoonCamera.Update(gameTime);
 
-            TotalFood = days.Update(gameTime, TotalFood, farmers, lumberjacks);
+            TotalFood = days.Update(gameTime, TotalFood, farmers, lumberjacks, buildingmap);
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
                 CloseGame();
@@ -206,6 +201,7 @@ namespace ExampleGame
             int tileX = (curmouseState.Position.X + (int)camera.Position.X - GraphicsDevice.Viewport.Width / 2) / _tilemap.TileWidth; // find the x coordinate of the clicked tile
             int tileY = (curmouseState.Position.Y + (int)camera.Position.Y - GraphicsDevice.Viewport.Height / 2) / _tilemap.TileHeight; // find the y coordinate of the clicked tile
             #endregion
+
             if (gameScreens == GameScreens.Controls) gameScreens = controlScreen.Update(gameTime, curkeyboardstate, prevkeyboardstate);
             else if (gameScreens == GameScreens.Start)
             {
@@ -215,13 +211,11 @@ namespace ExampleGame
             else if (gameScreens == GameScreens.Running)
             {
 
-
                 //changes to and from building and moving
                 if (clickState == ClickState.Building) clickState = buildingScreen.Update(gameTime, curmouseState, buildingmap, curkeyboardstate, prevkeyboardstate, camera, _graphics.GraphicsDevice, grid, ref TotalFood, ref TotalWood);
                 else if (clickState == ClickState.Move)
                 {
                     //sets the destination location
-                    if (curmouseState.LeftButton == ButtonState.Pressed) { pen.dest = new Vector2(tileX * _tilemap.TileWidth, tileY * _tilemap.TileHeight); }
 
                     if (curkeyboardstate.IsKeyDown(Keys.B) && prevkeyboardstate.IsKeyUp(Keys.B)) clickState = ClickState.Building;
                     //pen.Update(gameTime, _tilemap, grid);
@@ -239,38 +233,11 @@ namespace ExampleGame
                     }
                 }
 
-                #region move arrowkeys
-                if (curkeyboardstate.IsKeyDown(Keys.A) && !prevkeyboardstate.IsKeyDown(Keys.A))
-                {
-                    // Calculate the destination based on current position and the desired direction
-                    pen.dest = new Vector2(pen.Position.X - _tilemap.TileWidth, pen.Position.Y);
-                    pen.Move(gameTime, _tilemap);
-                }
-
-                if (curkeyboardstate.IsKeyDown(Keys.D) && !prevkeyboardstate.IsKeyDown(Keys.D))
-                {
-                    pen.dest = new Vector2(pen.Position.X + _tilemap.TileWidth, pen.Position.Y);
-                    pen.Move(gameTime, _tilemap);
-                }
-
-                if (curkeyboardstate.IsKeyDown(Keys.W) && !prevkeyboardstate.IsKeyDown(Keys.W))
-                {
-                    pen.dest = new Vector2(pen.Position.X, pen.Position.Y - _tilemap.TileHeight);
-                    pen.Move(gameTime, _tilemap);
-                }
-
-                if (curkeyboardstate.IsKeyDown(Keys.S) && !prevkeyboardstate.IsKeyDown(Keys.S))
-                {
-                    pen.dest = new Vector2(pen.Position.X, pen.Position.Y + _tilemap.TileHeight);
-                    pen.Move(gameTime, _tilemap);
-                }
-                #endregion
-
                 #region move camera
-                if (curkeyboardstate.IsKeyDown(Keys.Left)) { camera.Move(new Vector2(-2, 0)); }
-                if (curkeyboardstate.IsKeyDown(Keys.Right)) camera.Move(new Vector2(2, 0));
-                if (curkeyboardstate.IsKeyDown(Keys.Up)) camera.Move(new Vector2(0, -2));
-                if (curkeyboardstate.IsKeyDown(Keys.Down)) camera.Move(new Vector2(0, 2));
+                if (curkeyboardstate.IsKeyDown(Keys.Left) || curkeyboardstate.IsKeyDown(Keys.A)) { camera.Move(new Vector2(-2, 0)); }
+                if (curkeyboardstate.IsKeyDown(Keys.Right) || curkeyboardstate.IsKeyDown(Keys.D)) camera.Move(new Vector2(2, 0));
+                if (curkeyboardstate.IsKeyDown(Keys.Up) || curkeyboardstate.IsKeyDown(Keys.W)) camera.Move(new Vector2(0, -2));
+                if (curkeyboardstate.IsKeyDown(Keys.Down) || curkeyboardstate.IsKeyDown(Keys.S)) camera.Move(new Vector2(0, 2));
                 camera.UpdateTransform(GraphicsDevice.Viewport);
                 #endregion
             }
@@ -347,7 +314,6 @@ namespace ExampleGame
             if (gameScreens != GameScreens.Controls)
             {
                 _tilemap.Draw(gameTime, _spriteBatch);
-                _spriteBatch.Draw(pen.texture, pen.Position, null, Color.White, 0, new Vector2(0, 0), 0.5f, SpriteEffects.None, 0);
                 buildingmap.Draw(gameTime, _spriteBatch);
             }
 

@@ -10,6 +10,7 @@ using System.Windows.Forms.VisualStyles;
 using Microsoft.Xna.Framework.Content;
 using ExampleGame.Enums;
 using SharpDX.DirectWrite;
+using static CityBuilderGame.Farmer;
 
 namespace CityBuilderGame
 {
@@ -26,6 +27,7 @@ namespace CityBuilderGame
             ReturningHome
         }
 
+        private const int WOODPERCHOP = 2;
         public LumberjackState state = LumberjackState.Idle; // Holds the current farmer task
         private Vector2 curTreeLocation; // Store the current tree location
         private Grid grid; // Reference to the grid of nodes of water
@@ -33,6 +35,7 @@ namespace CityBuilderGame
 
         private double ChoppingCoolDown = 0; // the time since last chop from the lumberjack
         int ResourcesHeld = 0;
+        public static List<Vector2> allWoodChoppingLocations = new List<Vector2>();
 
         /// <summary>
         /// constructor
@@ -45,6 +48,7 @@ namespace CityBuilderGame
         {
             grid = g;
             Position = new Vector2(pos.X * 32, pos.Y * 32);
+            DrawPosition = Position;
             this.bm = bm;
             FindHome();
             texture = c.Load<Texture2D>("WoodChopper");
@@ -121,6 +125,7 @@ namespace CityBuilderGame
                 case LumberjackState.Idle:
                     // Find the next farm location and update state to "Farming"
                     curTreeLocation = FindNextTreeLocation(Tm);
+                    allWoodChoppingLocations.Add(curTreeLocation);
                     dest = curTreeLocation;
                     if (home == curTreeLocation) curTreeLocation = Vector2.Zero;
                     UpdateAnimation(gT);
@@ -137,7 +142,8 @@ namespace CityBuilderGame
                         ChopTile(curTreeLocation, Tm);
                         state = LumberjackState.ReturningHome;
                         ChoppingCoolDown = 0;
-                        ResourcesHeld = 3;
+                        ResourcesHeld = WOODPERCHOP;
+                        allWoodChoppingLocations.Remove(curTreeLocation);
                     }
                     break;
 
@@ -169,6 +175,10 @@ namespace CityBuilderGame
                     break;
                 case LumberjackState.GoingToTree:
                     UpdateAnimation(gT);
+                    if (curTreeLocation == new Vector2(0, 0))
+                    {
+                        state = LumberjackState.Idle;
+                    }
                     if (curTreeLocation != Position) base.Update(gT, Tm, grid);
                     else if(curTreeLocation == Position) { state = LumberjackState.ChoppingWood; }
                     else
@@ -214,6 +224,11 @@ namespace CityBuilderGame
                 {
                     int row = ((i / Tm.MapWidth));
                     int col = ((i % Tm.MapWidth));
+
+                    if (allWoodChoppingLocations.Contains(new Vector2(col * bm.TileHeight, row * bm.TileWidth)))
+                    {
+                        continue; // Skip this location
+                    }
                     trees.Add(new Vector2(col, row));
                 }
             }

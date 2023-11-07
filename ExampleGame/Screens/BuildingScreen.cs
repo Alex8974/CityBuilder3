@@ -23,6 +23,8 @@ namespace ExampleGame.Screens
         ContentManager content;
         Texture2D t;
         Texture2D boxTexture;
+        Farmer ff;
+        Lumberjack ll;
 
         bool deleteMode = false;
 
@@ -32,7 +34,7 @@ namespace ExampleGame.Screens
         /// <param name="f">the list of famres</param>
         /// <param name="l">the list of lumberjacks</param>
         /// <param name="c">the content manager</param>
-        public BuildingScreen(List<Farmer> f, List<Lumberjack> l, ContentManager c)
+        public BuildingScreen(List<Farmer> f, List<Lumberjack> l, ContentManager c, BasicTilemap bm)
         {
             content = c;
             buildingOptions = (BuildingOptions) 20;
@@ -40,6 +42,8 @@ namespace ExampleGame.Screens
             lumberjacks = l;
             t = c.Load<Texture2D>("tilemapCastleGame1.4");
             boxTexture = c.Load<Texture2D>("SelectionBox");
+            ff = new Farmer(new Vector2(100, 100), c, bm);
+            ll = new Lumberjack(new Vector2(100, 100),null, c, bm );
         }
 
         public void Initilize()
@@ -52,8 +56,8 @@ namespace ExampleGame.Screens
             int mx = (ms.Position.X + (int)c.Position.X - d.Viewport.Width / 2) / bm.TileWidth;
             int my = (ms.Position.Y + (int)c.Position.Y - d.Viewport.Height / 2) / bm.TileHeight;
 
-            if (kbs.IsKeyDown(Keys.P) && !prevkbs.IsKeyDown(Keys.P)) farmers.Add(new Farmer(new Vector2(mx, my), g, content, bm));
-            if (kbs.IsKeyDown(Keys.L) && !prevkbs.IsKeyDown(Keys.L)) lumberjacks.Add(new Lumberjack(new Vector2(mx, my), g, content, bm));
+            if (kbs.IsKeyDown(Keys.F) && !prevkbs.IsKeyDown(Keys.F)) farmers.Add(new Farmer(new Vector2(mx, my), g, content, bm));
+            if (kbs.IsKeyDown(Keys.C) && !prevkbs.IsKeyDown(Keys.C)) lumberjacks.Add(new Lumberjack(new Vector2(mx, my), g, content, bm));
 
             if (kbs.IsKeyDown(Keys.X) && !prevkbs.IsKeyDown(Keys.X)) deleteMode = !deleteMode;
             if (deleteMode == false)
@@ -99,8 +103,8 @@ namespace ExampleGame.Screens
                                 break;
                             case BuildingOptions.Tree:
                                 TotalFood--;
-                                if (TotalWood >= 0) bm.TileIndices[(my * bm.MapWidth) + mx] = (int)buildingOptions;
-                                else TotalWood++;
+                                if (TotalFood >= 0) bm.TileIndices[(my * bm.MapWidth) + mx] = (int)buildingOptions;
+                                else TotalFood++;
                                 break;
                             case BuildingOptions.FullCrops:
                                 TotalWood -= 2;
@@ -148,6 +152,8 @@ namespace ExampleGame.Screens
         {            
             if(!deleteMode)spriteBatch.DrawString(font, $"Click to build", new Vector2(280, 100), Color.Black, 0, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
             else spriteBatch.DrawString(font, "Click to Delete Item", new Vector2(250, 100), Color.DarkRed, 0, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+
+            #region the building options and selection
 
             Vector2 size = new Vector2(4,4);
             switch (buildingOptions)
@@ -372,7 +378,17 @@ namespace ExampleGame.Screens
                     spriteBatch.Draw(t, new Vector2(7 * 42 + 10, 10) + size, new Rectangle(4 * 32, 6 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
                     break;
             }
-            
+
+            #endregion
+
+            spriteBatch.Draw(boxTexture, new Vector2(0 * 42 + 10, 32+30), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+            spriteBatch.Draw(ff.texture, new Vector2(0 * 42 + 10, 32 + 30), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+            spriteBatch.DrawString(font, "'F'", new Vector2(0 * 42 + 20, 100), Color.Black, 0, new Vector2(0, 0), 0.40f, SpriteEffects.None, 0);
+
+            spriteBatch.Draw(boxTexture, new Vector2(1 * 42 + 10, 32 + 30), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+            spriteBatch.Draw(ll.texture, new Vector2(1 * 42 + 10, 32 + 30), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+            spriteBatch.DrawString(font, "'C'", new Vector2(1 * 42 + 20, 100), Color.Black, 0, new Vector2(0, 0), 0.40f, SpriteEffects.None, 0);
+
             //spriteBatch.Draw(t, new Vector2(0, 0), source, Color.White, 0f, new Vector2(0, 0), SpriteEffects.None, 0);
         }
     }

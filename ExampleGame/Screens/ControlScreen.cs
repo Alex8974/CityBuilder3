@@ -28,7 +28,7 @@ namespace ExampleGame.Screens
             sb.DrawString(f, "Game Controls", new Vector2(150, 50), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
             sb.DrawString(f, "-Press 'b' to switch between building and moving", new Vector2(50, 80), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
             sb.DrawString(f, "-Use the 'Q' and 'E' keys to toggle building options", new Vector2(50, 110), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
-            sb.DrawString(f, "-While in building mode press 'p' to place farmer", new Vector2(50, 140), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
+            sb.DrawString(f, "-While in building mode press 'F' to place farmer", new Vector2(50, 140), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
             sb.DrawString(f, "-Use the arrow keys to move the screen", new Vector2(50, 170), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
             sb.DrawString(f, "-WASD are used to move the penguin (you)", new Vector2(50, 200), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
             sb.DrawString(f, "-when exiting press the 'esc' key to save your data", new Vector2(50, 230), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
