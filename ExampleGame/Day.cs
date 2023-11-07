@@ -90,7 +90,7 @@ namespace ExampleGame
         /// <param name="sb"></param>
         public void Draw(GameTime gT, SpriteBatch sb, SpriteFont f, Viewport v)
         {
-            sb.DrawString(f, $"Current Day: {CurrentDay}", new Vector2(500, 10), Color.Black, 0, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+            sb.DrawString(f, $"Current Day:    {CurrentDay}", new Vector2(500, 10), Color.Black, 0, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
             Color nightColor = new Color(0, 0, 160, 128); // Dark blue with 50% transparency
 
             if (NightOrDay == false)

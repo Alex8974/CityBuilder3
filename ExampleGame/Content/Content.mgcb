@@ -57,6 +57,18 @@
 /processorParam:Scale=1
 /build:map5.tmap
 
+#begin Moon.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Moon.png
+
 #begin onePixelNight.png
 /importer:TextureImporter
 /processor:TextureProcessor
