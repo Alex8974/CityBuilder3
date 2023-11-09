@@ -57,6 +57,13 @@
 /processorParam:TextureFormat=Compressed
 /build:File.spritefont
 
+#begin File2.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:File2.spritefont
+
 #begin map4.tmap
 /importer:BasicTilemapImporter
 /processor:BasicTilemapProcessor
@@ -68,6 +75,12 @@
 /processor:BasicTilemapProcessor
 /processorParam:Scale=1
 /build:map5.tmap
+
+#begin map5t.tmap
+/importer:BasicTilemapImporter
+/processor:BasicTilemapProcessor
+/processorParam:Scale=1
+/build:map5t.tmap
 
 #begin Moon.png
 /importer:TextureImporter

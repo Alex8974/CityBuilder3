@@ -10,6 +10,7 @@ using System.Windows.Forms.VisualStyles;
 using Microsoft.Xna.Framework.Content;
 using ExampleGame.Enums;
 using SharpDX.DirectWrite;
+using System.Windows.Forms;
 
 namespace CityBuilderGame
 {
@@ -242,9 +243,8 @@ namespace CityBuilderGame
                     farmableLocations.Add(new Vector2(col, row));
                 }
             }
-
-
             Node startNode = grid.Nodes[farmerGridX, farmerGridY];
+         
             Node nearestFarmNode = null;
             int shortestPathLength = int.MaxValue;
 

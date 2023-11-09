@@ -1,3 +1,4 @@
 I made all the sprites and the tiles for the tile map
-the backgound was from https://pixabay.com/illustrations/village-mountain-medieval-buildings-1084087/ 
+the backgound on the start screen was from https://pixabay.com/illustrations/village-mountain-medieval-buildings-1084087/ 
 	royalty free, no need to give credt but this is where i got it from
+the font is bangers from class

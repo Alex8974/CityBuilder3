@@ -20,6 +20,7 @@ using LightingAndCamerasExample;
 using Basic3DExample;
 using SharpDX.Direct2D1.Effects;
 using ExampleGame.BiggerTileMapGenerator;
+using System.Linq.Expressions;
 
 namespace ExampleGame
 {
@@ -35,6 +36,7 @@ namespace ExampleGame
         private BasicTilemap buildingmap;
         private TileMapGenerator generator;
         private SpriteFont font;
+        private SpriteFont font2;
 
         private KeyboardState prevkeyboardstate;
         private KeyboardState curkeyboardstate;
@@ -49,6 +51,7 @@ namespace ExampleGame
         BuildingScreen buildingScreen;
         StartScreen startScreen;
         ControlScreen controlScreen;
+        TutorialScreen tutorialScreen;
 
         private List<Farmer> farmers;
         private List<Lumberjack> lumberjacks;
@@ -79,6 +82,14 @@ namespace ExampleGame
             base.Initialize();
         }
 
+        public void LoadMapContent()
+        {
+
+            buildingmap = Content.Load<BasicTilemap>("map5");
+            buildingScreen = new BuildingScreen(farmers, lumberjacks, Content, buildingmap);
+            LoadGame();
+        }
+
         /// <summary>
         /// loads the content of the game
         /// </summary>
@@ -87,16 +98,17 @@ namespace ExampleGame
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             _tilemap = Content.Load<BasicTilemap>("map4");
-            buildingmap = Content.Load<BasicTilemap>("map5");
-            buildingScreen = new BuildingScreen(farmers, lumberjacks, Content, buildingmap);
+            tutorialScreen = new(Content, font, _graphics, _tilemap);
 
+            
             Moon = new Crate(this, CrateType.Slats, Matrix.CreateTranslation(1, 1, 1));
 
             grid = new Grid(_tilemap.MapWidth, _tilemap.MapHeight, _tilemap, 0);
             camera = new Camera(GraphicsDevice.Viewport, _tilemap.MapWidth * _tilemap.TileWidth, _tilemap.MapHeight * _tilemap.TileHeight);
 
             font = Content.Load<SpriteFont>("File");
-            LoadGame();
+            font2 = Content.Load<SpriteFont>("File2");
+            
         }
         
         /// <summary>
@@ -183,14 +195,6 @@ namespace ExampleGame
         /// <param name="gameTime">the game time</param>
         protected override void Update(GameTime gameTime)
         {
-            MoonCamera.Update(gameTime);
-
-            TotalFood = days.Update(gameTime, TotalFood, farmers, lumberjacks, buildingmap);
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-            {
-                CloseGame();
-                Exit();
-            }
 
             #region keboard / mouse
             prevkeyboardstate = curkeyboardstate;
@@ -202,44 +206,34 @@ namespace ExampleGame
             int tileY = (curmouseState.Position.Y + (int)camera.Position.Y - GraphicsDevice.Viewport.Height / 2) / _tilemap.TileHeight; // find the y coordinate of the clicked tile
             #endregion
 
+            if (gameScreens == GameScreens.Tutorial)
+            {
+                gameScreens = tutorialScreen.Update(gameTime, ref camera, prevkeyboardstate, curkeyboardstate, curmouseState);
+                return;
+            }
+
+            MoonCamera.Update(gameTime);
+
+            TotalFood = days.Update(gameTime, TotalFood, farmers, lumberjacks, buildingmap);
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape) && !prevkeyboardstate.IsKeyDown(Keys.Escape))
+            {
+                if(gameScreens == GameScreens.Running) CloseGame();
+                farmers.Clear();
+                lumberjacks.Clear();
+                days.NightOrDay = true;
+                if (gameScreens != GameScreens.Start) gameScreens = GameScreens.Start;
+                else Exit();
+            }
+
             if (gameScreens == GameScreens.Controls) gameScreens = controlScreen.Update(gameTime, curkeyboardstate, prevkeyboardstate);
             else if (gameScreens == GameScreens.Start)
             {
-                gameScreens = startScreen.Update(gameTime, curkeyboardstate, prevkeyboardstate);
+                gameScreens = startScreen.Update(gameTime, curkeyboardstate, prevkeyboardstate, tutorialScreen, this);
 
             }
             else if (gameScreens == GameScreens.Running)
             {
-
-                //changes to and from building and moving
-                if (clickState == ClickState.Building) clickState = buildingScreen.Update(gameTime, curmouseState, buildingmap, curkeyboardstate, prevkeyboardstate, camera, _graphics.GraphicsDevice, grid, ref TotalFood, ref TotalWood);
-                else if (clickState == ClickState.Move)
-                {
-                    //sets the destination location
-
-                    if (curkeyboardstate.IsKeyDown(Keys.B) && prevkeyboardstate.IsKeyUp(Keys.B)) clickState = ClickState.Building;
-                    //pen.Update(gameTime, _tilemap, grid);
-                    foreach (Farmer f in farmers)
-                    {
-                        if (days.NightOrDay == false) f.state = Farmer.FarmerState.ReturningHome;
-                        f.Update(gameTime, buildingmap, out int hold);
-                        TotalFood += hold;
-                    }
-                    foreach (Lumberjack l in lumberjacks)
-                    {
-                        if (days.NightOrDay == false) l.state = Lumberjack.LumberjackState.ReturningHome;
-                        l.Update(gameTime, buildingmap, out int hold);
-                        TotalWood += hold;
-                    }
-                }
-
-                #region move camera
-                if (curkeyboardstate.IsKeyDown(Keys.Left) || curkeyboardstate.IsKeyDown(Keys.A)) { camera.Move(new Vector2(-2, 0)); }
-                if (curkeyboardstate.IsKeyDown(Keys.Right) || curkeyboardstate.IsKeyDown(Keys.D)) camera.Move(new Vector2(2, 0));
-                if (curkeyboardstate.IsKeyDown(Keys.Up) || curkeyboardstate.IsKeyDown(Keys.W)) camera.Move(new Vector2(0, -2));
-                if (curkeyboardstate.IsKeyDown(Keys.Down) || curkeyboardstate.IsKeyDown(Keys.S)) camera.Move(new Vector2(0, 2));
-                camera.UpdateTransform(GraphicsDevice.Viewport);
-                #endregion
+                GameUpdate(gameTime);                
             }
             
             base.Update(gameTime);
@@ -250,12 +244,56 @@ namespace ExampleGame
         /// </summary>
         protected void CloseGame()
         {
-            string s = "";
-            for(int i = 0; i < buildingmap.TileIndices.Length-1; i++)
+            try
             {
-                s += $"{buildingmap.TileIndices[i]}, ";
+                string s = "";
+                for (int i = 0; i < buildingmap.TileIndices.Length - 1; i++)
+                {
+                    s += $"{buildingmap.TileIndices[i]}, ";
+                }
+                WriteToFile(s);
             }
-            WriteToFile(s);
+            catch
+            {
+                MessageBox.Show("bad save data, did not save");
+            }
+        }
+
+        /// <summary>
+        /// updates the current game
+        /// </summary>
+        /// <param name="gameTime">the game time</param>
+        private void GameUpdate(GameTime gameTime)
+        {
+            //changes to and from building and moving
+            if (clickState == ClickState.Building) clickState = buildingScreen.Update(gameTime, curmouseState, buildingmap, curkeyboardstate, prevkeyboardstate, camera, _graphics.GraphicsDevice, grid, ref TotalFood, ref TotalWood);
+            else if (clickState == ClickState.Move)
+            {
+                //sets the destination location
+
+                if (curkeyboardstate.IsKeyDown(Keys.B) && prevkeyboardstate.IsKeyUp(Keys.B)) clickState = ClickState.Building;
+                //pen.Update(gameTime, _tilemap, grid);
+                foreach (Farmer f in farmers)
+                {
+                    if (days.NightOrDay == false) f.state = Farmer.FarmerState.ReturningHome;
+                    f.Update(gameTime, buildingmap, out int hold);
+                    TotalFood += hold;
+                }
+                foreach (Lumberjack l in lumberjacks)
+                {
+                    if (days.NightOrDay == false) l.state = Lumberjack.LumberjackState.ReturningHome;
+                    l.Update(gameTime, buildingmap, out int hold);
+                    TotalWood += hold;
+                }
+            }
+
+            #region move camera
+            if (curkeyboardstate.IsKeyDown(Keys.Left) || curkeyboardstate.IsKeyDown(Keys.A)) { camera.Move(new Vector2(-2, 0)); }
+            if (curkeyboardstate.IsKeyDown(Keys.Right) || curkeyboardstate.IsKeyDown(Keys.D)) camera.Move(new Vector2(2, 0));
+            if (curkeyboardstate.IsKeyDown(Keys.Up) || curkeyboardstate.IsKeyDown(Keys.W)) camera.Move(new Vector2(0, -2));
+            if (curkeyboardstate.IsKeyDown(Keys.Down) || curkeyboardstate.IsKeyDown(Keys.S)) camera.Move(new Vector2(0, 2));
+            camera.UpdateTransform(GraphicsDevice.Viewport);
+            #endregion
         }
 
         /// <summary>
@@ -307,18 +345,28 @@ namespace ExampleGame
         /// <param name="gameTime">the game time</param>
         protected override void Draw(GameTime gameTime)
         {
+            if(gameScreens == GameScreens.Tutorial)
+            {
+                tutorialScreen.Draw(gameTime, ref camera, font, font2);
+                return;
+            }
+
             GraphicsDevice.Clear(Color.Black);
 
             // TODO: Add your drawing code here
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, camera.Transform);
-            if (gameScreens != GameScreens.Controls)
+            if (gameScreens != GameScreens.Controls && gameScreens != GameScreens.Start)
             {
                 _tilemap.Draw(gameTime, _spriteBatch);
                 buildingmap.Draw(gameTime, _spriteBatch);
             }
 
-            foreach (Farmer f in farmers) f.Draw(_spriteBatch, gameTime);
-            foreach (Lumberjack l in lumberjacks) l.Draw(_spriteBatch, gameTime);
+            if(gameScreens == GameScreens.Running)
+            {
+                foreach (Farmer f in farmers) f.Draw(_spriteBatch, gameTime);
+                foreach (Lumberjack l in lumberjacks) l.Draw(_spriteBatch, gameTime);
+            }
+
             _spriteBatch.End();
 
 
@@ -340,6 +388,7 @@ namespace ExampleGame
                 days.Draw(gameTime, _spriteBatch, font, GraphicsDevice.Viewport);
                 _spriteBatch.DrawString(font, $"Food : {TotalFood} ", new Vector2(700, 10), Color.Black, 0, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
                 _spriteBatch.DrawString(font, $"Wood : {TotalWood} ", new Vector2(700, 30), Color.Black, 0, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+
             }
             _spriteBatch.End();
 

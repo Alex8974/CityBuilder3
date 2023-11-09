@@ -11,6 +11,7 @@ namespace ExampleGame.Enums
         Start, 
         Running,
         Pause,
-        Controls
+        Controls,
+        Tutorial
     }
 }
