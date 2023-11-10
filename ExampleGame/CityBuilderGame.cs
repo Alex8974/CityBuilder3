@@ -352,7 +352,6 @@ namespace ExampleGame
             }
 
             GraphicsDevice.Clear(Color.Black);
-
             // TODO: Add your drawing code here
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, camera.Transform);
             if (gameScreens != GameScreens.Controls && gameScreens != GameScreens.Start)
@@ -366,9 +365,7 @@ namespace ExampleGame
                 foreach (Farmer f in farmers) f.Draw(_spriteBatch, gameTime);
                 foreach (Lumberjack l in lumberjacks) l.Draw(_spriteBatch, gameTime);
             }
-
             _spriteBatch.End();
-
 
 
             _spriteBatch.Begin();
@@ -392,14 +389,15 @@ namespace ExampleGame
             }
             _spriteBatch.End();
 
+            #region Draws the Moon
             Matrix transform = Matrix.CreateTranslation(700, -100, 0);
-
             _spriteBatch.Begin( transformMatrix: transform);
             if(days.NightOrDay == false)
             {
                 Moon.Draw(MoonCamera);
             }
             _spriteBatch.End();
+            #endregion
 
             base.Draw(gameTime);
 
