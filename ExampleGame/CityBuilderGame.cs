@@ -116,11 +116,15 @@ namespace ExampleGame
         /// </summary>
         private void LoadGame()
         {
-            string filepath = "..\\..\\..\\buildingSaveFile.txt";
+            string currentDirectory = Directory.GetCurrentDirectory();
+            string fileName = "buildingSaveFile.txt";
+
+            // Use Path.Combine to create the file path
+            string filePath = Path.Combine(currentDirectory, fileName);
 
             try
             {
-                string[] lines = File.ReadAllLines(filepath);
+                string[] lines = File.ReadAllLines(filePath);
 
                 string boxes = lines[0];
                 string[] tiles = boxes.Split(',');
@@ -302,7 +306,12 @@ namespace ExampleGame
         /// <param name="s">the string that is being written</param>
         private void WriteToFile(string s)
         {
-            string filePath = "..\\..\\..\\buildingSaveFile.txt";
+            string currentDirectory = Directory.GetCurrentDirectory();
+            string fileName = "buildingSaveFile.txt";
+
+            // Use Path.Combine to create the file path
+            string filePath = Path.Combine(currentDirectory, fileName);
+
 
             if (!File.Exists(filePath))
             {

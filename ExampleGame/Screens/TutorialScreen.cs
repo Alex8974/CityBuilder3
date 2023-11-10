@@ -94,11 +94,13 @@ namespace ExampleGame
         /// </summary>
         private void LoadGame()
         {
-            string filepath = "..\\..\\..\\TutorialSave.txt";
+            string currentDirectory = Directory.GetCurrentDirectory();
+            string fileName = "TutorialSave.txt";
 
+            string filePath = Path.Combine(currentDirectory, fileName);
             try
             {
-                string[] lines = File.ReadAllLines(filepath);
+                string[] lines = File.ReadAllLines(filePath);
 
                 string boxes = lines[0];
                 string[] tiles = boxes.Split(',');
