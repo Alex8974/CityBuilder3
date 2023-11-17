@@ -241,8 +241,57 @@ namespace ExampleGame
                     }
                 }
             }
-            
-            
+        }
+
+        /// <summary>
+        /// finds the closest unocupied home and assigns it to the farmer
+        /// </summary>
+        protected void FindHome(List<House> h, BasicTilemap bm)
+        {
+            foreach (House house in h)
+            {
+                if (house.Occupants < house.Capacity)
+                {
+                    house.Occupants++;
+                    if (house.Occupants == house.Capacity)
+                    {
+                        bm.TileIndices[(int)house.Position.X * bm.MapWidth + (int)house.Position.Y]++;
+                    }
+                    home = new Vector2(house.Position.Y * bm.TileWidth, house.Position.X * bm.TileHeight);
+                    break;
+
+                }
+            }
+
+            //for(int i = 0; i < bm.TileIndices.Length-1; i++)
+            //{
+            //    if (bm.TileIndices[i] == (int)BuildingOptions.BlueHouse)
+            //    {
+            //        bm.TileIndices[i]++;
+            //        int row = (i / bm.MapWidth);
+            //        int col = (i % bm.MapWidth);
+            //        home = new Vector2(col * bm.TileWidth, row * bm.TileHeight);
+            //        break;
+            //    }
+            //    else
+            //    {
+            //        home = Vector2.Zero;
+            //    }
+            //}
+        }
+
+        /// <summary>
+        /// checks to see if the home still exists
+        /// </summary>
+        /// <param name="bm">the building map checking on </param>
+        /// <returns>true if it still exists false if not</returns>
+        protected bool CheckHome(BasicTilemap bm)
+        {
+            int holdx = (int)home.X / 32;
+            int holdy = (int)home.Y / 32;
+
+            if (bm.TileIndices[(holdy * bm.MapWidth) + holdx] == 21 || bm.TileIndices[(holdy * bm.MapWidth) + holdx] == 20) return true;
+            else return false;
         }
 
         /// <summary>

@@ -20,11 +20,14 @@ namespace ExampleGame.Screens
         BuildingOptions buildingOptions;
         List<Farmer> farmers;
         List<Lumberjack> lumberjacks;
+        List<House> housesss;
         ContentManager content;
         Texture2D t;
         Texture2D boxTexture;
         Farmer ff;
         Lumberjack ll;
+        int houseCapacity = 1;
+
 
         bool deleteMode = false;
 
@@ -34,16 +37,17 @@ namespace ExampleGame.Screens
         /// <param name="f">the list of famres</param>
         /// <param name="l">the list of lumberjacks</param>
         /// <param name="c">the content manager</param>
-        public BuildingScreen(List<Farmer> f, List<Lumberjack> l, ContentManager c, BasicTilemap bm)
+        public BuildingScreen(List<Farmer> f, List<Lumberjack> l, ContentManager c, BasicTilemap bm, List<House> h)
         {
             content = c;
             buildingOptions = (BuildingOptions) 20;
             farmers = f;
             lumberjacks = l;
+            housesss = h;
             t = c.Load<Texture2D>("tilemapCastleGame1.4");
             boxTexture = c.Load<Texture2D>("SelectionBox");
-            ff = new Farmer(new Vector2(100, 100), c, bm);
-            ll = new Lumberjack(new Vector2(100, 100),null, c, bm );
+            ff = new Farmer(new Vector2(100, 100), c, bm, housesss);
+            ll = new Lumberjack(new Vector2(100, 100),null, c, bm, housesss);
         }
 
         public void Initilize()
@@ -60,8 +64,8 @@ namespace ExampleGame.Screens
             {
                 if(my >= 0 && my <= bm.MapHeight)
                 {
-                    if (kbs.IsKeyDown(Keys.F) && !prevkbs.IsKeyDown(Keys.F)) farmers.Add(new Farmer(new Vector2(mx, my), g, content, bm));
-                    if (kbs.IsKeyDown(Keys.C) && !prevkbs.IsKeyDown(Keys.C)) lumberjacks.Add(new Lumberjack(new Vector2(mx, my), g, content, bm));
+                    if (kbs.IsKeyDown(Keys.F) && !prevkbs.IsKeyDown(Keys.F)) farmers.Add(new Farmer(new Vector2(mx, my), g, content, bm, housesss));
+                    if (kbs.IsKeyDown(Keys.C) && !prevkbs.IsKeyDown(Keys.C)) lumberjacks.Add(new Lumberjack(new Vector2(mx, my), g, content, bm, housesss));
                 }
             }
             
@@ -105,7 +109,13 @@ namespace ExampleGame.Screens
                                 break;
                             case BuildingOptions.BlueHouse:
                                 TotalWood -= 3;
-                                if (TotalWood >= 0) bm.TileIndices[(my * bm.MapWidth) + mx] = (int)buildingOptions;
+                                if (TotalWood >= 0)
+                                {
+                                    bm.TileIndices[(my * bm.MapWidth) + mx] = (int)buildingOptions;
+                                    var h = new House(new Vector2(my, mx), houseCapacity);
+                                    housesss.Add(h);
+                                }
+
                                 else TotalWood += 3;
                                 break;
                             case BuildingOptions.Tree:

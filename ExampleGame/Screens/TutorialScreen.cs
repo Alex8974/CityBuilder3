@@ -44,6 +44,7 @@ namespace ExampleGame
 
         private List<Farmer> farmers2;
         private List<Lumberjack> lumberjacks2;
+        private List<House> houses;
         private int TotalFood = 10;
         private int TotalWood = 10;
 
@@ -73,7 +74,7 @@ namespace ExampleGame
         /// <summary>
         /// loads the content of the game
         /// </summary>
-        public void LoadContent()
+        public void LoadContent(List<House> h)
         {
             _spriteBatch = new SpriteBatch(_graphics.GraphicsDevice);
 
@@ -81,7 +82,7 @@ namespace ExampleGame
 
             grid = new Grid(_tilemap.MapWidth, _tilemap.MapHeight, _tilemap, 0);
             LoadGame();
-            buildingScreen = new BuildingScreen(farmers2, lumberjacks2, content, buildingmapt);
+            buildingScreen = new BuildingScreen(farmers2, lumberjacks2, content, buildingmapt, h);
 
             pixel = new Texture2D(_graphics.GraphicsDevice, 1, 1);
             Color[] data = new Color[1];
@@ -129,7 +130,7 @@ namespace ExampleGame
                     string[] possubline = subsubline[1].Split(',');
                     Vector2 pos = new Vector2(Int32.Parse(possubline[0]), Int32.Parse(possubline[1]));
                     Vector2 home = new Vector2(Int32.Parse(homesubline[0]), Int32.Parse(homesubline[1]));
-                    Farmer f = new Farmer(pos, grid, content, buildingmapt);
+                    Farmer f = new Farmer(pos, grid, content, buildingmapt, houses);
                     f.home = home;
                     farmers2.Add(f);
                 }
@@ -145,7 +146,7 @@ namespace ExampleGame
                     string[] possubline = subsubline[1].Split(',');
                     Vector2 pos = new Vector2(Int32.Parse(possubline[0]), Int32.Parse(possubline[1]));
                     Vector2 home = new Vector2(Int32.Parse(homesubline[0]), Int32.Parse(homesubline[1]));
-                    Lumberjack f = new Lumberjack(pos, grid, content, buildingmapt);
+                    Lumberjack f = new Lumberjack(pos, grid, content, buildingmapt, houses);
                     f.home = home;
                     lumberjacks2.Add(f);
                 }
@@ -201,13 +202,13 @@ namespace ExampleGame
                     foreach (Farmer f in farmers2)
                     {
                         if (days.NightOrDay == false) f.state = Farmer.FarmerState.ReturningHome;
-                        f.Update(gameTime, buildingmapt, out int hold);
+                        f.Update(gameTime, buildingmapt, out int hold, houses);
                         TotalFood += hold;
                     }
                     foreach (Lumberjack l in lumberjacks2)
                     {
                         if (days.NightOrDay == false) l.state = Lumberjack.LumberjackState.ReturningHome;
-                        l.Update(gameTime, buildingmapt, out int hold);
+                        l.Update(gameTime, buildingmapt, out int hold, houses);
                         TotalWood += hold;
                     }
                 }

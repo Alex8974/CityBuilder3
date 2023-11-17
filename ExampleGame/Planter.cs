@@ -1,41 +1,34 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ExampleGame;
-using System.Windows.Forms.VisualStyles;
-using Microsoft.Xna.Framework.Content;
-using ExampleGame.Enums;
-using SharpDX.DirectWrite;
 using static CityBuilderGame.Farmer;
+using static CityBuilderGame.Lumberjack;
 
-namespace CityBuilderGame
+namespace ExampleGame
 {
-    public class Lumberjack : Person
+    public class Planter : Person
     {
-         
-
-        // Define lumberjack states
-        public enum LumberjackState
+        public enum PlanterState
         {
             Idle,
-            ChoppingWood,
-            GoingToTree,
+            Planting,
+            GoingToPlant,
             ReturningHome
         }
 
-        private const int WOODPERCHOP = 2;
-        public LumberjackState state = LumberjackState.Idle; // Holds the current farmer task
-        private Vector2 curTreeLocation; // Store the current tree location
+        public PlanterState state = PlanterState.Idle; // Holds the current farmer task
+        private Vector2 PlantingLocation; // Store the current farm location
         private Grid grid; // Reference to the grid of nodes of water
         private BasicTilemap bm; // the building map that is passed in from the constructor
 
-        private double ChoppingCoolDown = 0; // the time since last chop from the lumberjack
+        private double FarmingCoolDown = 0; // the time since last farm from the farmer
         int ResourcesHeld = 0;
-        public static List<Vector2> allWoodChoppingLocations = new List<Vector2>();
+        public static List<Vector2> allplantingLocations = new List<Vector2>();
 
         /// <summary>
         /// constructor
@@ -44,18 +37,27 @@ namespace CityBuilderGame
         /// <param name="g">the grid of water so they know where not to move</param>
         /// <param name="c">the content manager</param>
         /// <param name="bm">the buildingtile map</param>
-        public Lumberjack(Vector2 pos, Grid g, ContentManager c, BasicTilemap bm, List<House> h)
+        public Planter(Vector2 pos, Grid g, ContentManager c, BasicTilemap bm, List<House> h)
         {
             grid = g;
             Position = new Vector2(pos.X * 32, pos.Y * 32);
-            DrawPosition = Position;
             this.bm = bm;
             FindHome(h, bm);
-            texture = c.Load<Texture2D>("WoodChopper");
+            texture = c.Load<Texture2D>("Farmer");
+            DrawPosition = Position;
             // Initialize other properties
         }
 
-        
+        public Planter(Vector2 pos, ContentManager c, BasicTilemap bm, List<House> h)
+        {
+            grid = null;
+            Position = new Vector2(pos.X * 32, pos.Y * 32);
+            this.bm = bm;
+            FindHome(h, bm);
+            texture = c.Load<Texture2D>("Farmer");
+            DrawPosition = Position;
+            // Initialize other properties
+        }
 
         /// <summary>
         /// updates the animation for the farmer
@@ -64,24 +66,24 @@ namespace CityBuilderGame
         private void UpdateAnimation(GameTime gT)
         {
             animationTimer += gT.ElapsedGameTime.TotalSeconds;
-            if(animationTimer > 0.30f)
+            if (animationTimer > 0.30f)
             {
                 switch (state)
                 {
-                    case LumberjackState.Idle:
-                        //animationFrame = 0;
+                    case PlanterState.Idle:
+                        animationFrame = 0;
                         break;
-                    case LumberjackState.ChoppingWood:
+                    case PlanterState.Planting:
                         if (animationFrame < 3) animationFrame = 3;
                         else if (animationFrame == 5) animationFrame = 3;
                         else animationFrame++;
                         break;
-                    case LumberjackState.ReturningHome:
+                    case PlanterState.ReturningHome:
                         if (animationFrame == 1) animationFrame = 2;
                         else if (animationFrame == 2) animationFrame = 1;
                         else animationFrame = 1;
                         break;
-                    case LumberjackState.GoingToTree:
+                    case PlanterState.GoingToPlant:
                         if (animationFrame == 1) animationFrame = 2;
                         else if (animationFrame == 2) animationFrame = 1;
                         else animationFrame = 1;
@@ -89,7 +91,6 @@ namespace CityBuilderGame
                 }
                 animationTimer = 0;
             }
-            
         }
 
         /// <summary>
@@ -102,33 +103,34 @@ namespace CityBuilderGame
             NewResources = 0;
             switch (state)
             {
-                case LumberjackState.Idle:
+                case PlanterState.Idle:
                     // Find the next farm location and update state to "Farming"
-                    curTreeLocation = FindNextTreeLocation(Tm);
-                    allWoodChoppingLocations.Add(curTreeLocation);
-                    dest = curTreeLocation;
-                    if (home == curTreeLocation) curTreeLocation = Vector2.Zero;
+                    PlantingLocation = FindNextPlantLocation(Tm);
+                    allFarmingLocations.Add(PlantingLocation);
+                    dest = PlantingLocation;
+                    if (home == PlantingLocation) PlantingLocation = Vector2.Zero;
                     UpdateAnimation(gT);
-                    if (Position != curTreeLocation) state = LumberjackState.GoingToTree;
-                    else if (curTreeLocation == Position)state = LumberjackState.ChoppingWood;
+                    if (Position != PlantingLocation) state = PlanterState.GoingToPlant;
+                    else if (PlantingLocation == Position) state = PlanterState.Planting;
                     break;
 
-                case LumberjackState.ChoppingWood:
+                case PlanterState.Planting:
                     // Farm at the current location and update grid
-                    ChoppingCoolDown += gT.ElapsedGameTime.TotalSeconds;
+                    FarmingCoolDown += gT.ElapsedGameTime.TotalSeconds;
                     UpdateAnimation(gT);
-                    if(ChoppingCoolDown > 3.0f)
+                    if (FarmingCoolDown > 1.0f)
                     {
-                        ChopTile(curTreeLocation, Tm);
-                        state = LumberjackState.ReturningHome;
-                        ChoppingCoolDown = 0;
-                        ResourcesHeld = WOODPERCHOP;
-                        allWoodChoppingLocations.Remove(curTreeLocation);
+                        PlantTile(PlantingLocation, Tm);
+                        state = PlanterState.ReturningHome;
+                        FarmingCoolDown = 0;
+                        ResourcesHeld = 1;
+                        allFarmingLocations.Remove(PlantingLocation);
                     }
                     break;
 
-                case LumberjackState.ReturningHome:
+                case PlanterState.ReturningHome:
                     // Move back to the home location
+
                     if (home != Vector2.Zero)
                     {
                         dest = home;
@@ -137,7 +139,7 @@ namespace CityBuilderGame
                         // If the farmer reaches home, update state to "Idle"
                         if (Position == home)
                         {
-                            state = LumberjackState.Idle;
+                            state = PlanterState.Idle;
                             if (CheckHome(bm))
                             {
                                 NewResources += ResourcesHeld;
@@ -150,23 +152,21 @@ namespace CityBuilderGame
                             }
                         }
                     }
-                    else{FindHome(h, bm);}
-                    
+                    else { FindHome(h, bm); }
+
                     break;
-                case LumberjackState.GoingToTree:
+                case PlanterState.GoingToPlant:
                     UpdateAnimation(gT);
-                    if (curTreeLocation == new Vector2(0, 0))
+                    if (PlantingLocation == new Vector2(0, 0))
                     {
-                        state = LumberjackState.Idle;
+                        state = PlanterState.Idle;
                     }
-                    if (curTreeLocation != Position) base.Update(gT, Tm, grid);
-                    else if(curTreeLocation == Position) { state = LumberjackState.ChoppingWood; }
+                    if (PlantingLocation != Position) base.Update(gT, Tm, grid);
+                    else if (PlantingLocation == Position) { state = PlanterState.Planting; }
                     else
-                    {
-                        state = LumberjackState.Idle;
-                    }
+                    { state = PlanterState.Idle; }
                     break;
-            
+
             }
         }
 
@@ -175,7 +175,7 @@ namespace CityBuilderGame
         /// </summary>
         /// <param name="Tm">the building tile map</param>
         /// <returns>returns the position in a vector2</returns>
-        private Vector2 FindNextTreeLocation(BasicTilemap Tm)
+        private Vector2 FindNextPlantLocation(BasicTilemap Tm)
         {
             // Use the Pathfinding class to find the next farmable location
             // You'll need to convert the position of the farmer to grid coordinates
@@ -185,49 +185,54 @@ namespace CityBuilderGame
             int farmerGridX = (int)(Position.X / Tm.TileWidth);
             int farmerGridY = (int)(Position.Y / Tm.TileHeight);
 
+            if (farmerGridX > 100) farmerGridX = farmerGridX / Tm.TileWidth;
+            if (farmerGridY > 100) farmerGridY = farmerGridY / Tm.TileWidth;
             // Assuming you have a list of farmable locations, convert them to grid coordinates
             // or use grid coordinates directly if they are in grid coordinates
-            List<Vector2> trees = new List<Vector2>();
-            
-            for(int i = 0; i < Tm.TileIndices.Length-1; i++)
+            List<Vector2> farmableLocations = new List<Vector2>();
+
+            for (int i = 0; i < Tm.TileIndices.Length - 1; i++)
             {
-                if(Tm.TileIndices[i] == 22)
+                if (Tm.TileIndices[i] >= 24 && Tm.TileIndices[i] < 30 || Tm.TileIndices[i] == 23)
                 {
                     int row = ((i / Tm.MapWidth));
                     int col = ((i % Tm.MapWidth));
 
-                    if (allWoodChoppingLocations.Contains(new Vector2(col * bm.TileHeight, row * bm.TileWidth)))
+                    if (allplantingLocations.Contains(new Vector2(col * bm.TileHeight, row * bm.TileWidth)) ||
+                        allFarmingLocations.Contains(new Vector2(col * bm.TileHeight, row * bm.TileWidth)) ||
+                        allWoodChoppingLocations.Contains(new Vector2(col * bm.TileHeight, row * bm.TileWidth))
+                        )
                     {
                         continue; // Skip this location
                     }
-                    trees.Add(new Vector2(col, row));
+
+                    farmableLocations.Add(new Vector2(col, row));
                 }
             }
-
-
             Node startNode = grid.Nodes[farmerGridX, farmerGridY];
-            Node nearestTreeNode = null;
+
+            Node nearestFarmNode = null;
             int shortestPathLength = int.MaxValue;
 
-            foreach (var treeLocation in trees)
+            foreach (var farmLocation in farmableLocations)
             {
-                int treeGridX = (int)(treeLocation.X);
-                int treeGridY = (int)(treeLocation.Y);
-                Node endNode = grid.Nodes[treeGridX, treeGridY];
-                
+                int farmGridX = (int)(farmLocation.X);
+                int farmGridY = (int)(farmLocation.Y);
+                Node endNode = grid.Nodes[farmGridX, farmGridY];
+
 
                 List<Node> path = Pathfinding.FindPath(grid.Nodes, startNode, endNode);
 
                 if (path != null && path.Count < shortestPathLength)
                 {
-                    nearestTreeNode = endNode;
+                    nearestFarmNode = endNode;
                     shortestPathLength = path.Count;
                 }
             }
 
-            if (nearestTreeNode != null)
+            if (nearestFarmNode != null)
             {
-                return new Vector2(nearestTreeNode.X * Tm.TileWidth, nearestTreeNode.Y * Tm.TileHeight);
+                return new Vector2(nearestFarmNode.X * Tm.TileWidth, nearestFarmNode.Y * Tm.TileHeight);
             }
             else
             {
@@ -241,13 +246,13 @@ namespace CityBuilderGame
         /// </summary>
         /// <param name="location">the location of the tile</param>
         /// <param name="bm">the building map</param>
-        private void ChopTile(Vector2 location, BasicTilemap bm)
+        private void PlantTile(Vector2 location, BasicTilemap bm)
         {
             int tilex = (int)location.X / 32;
             int tiley = (int)location.Y / 32;
-            if(bm.TileIndices[tiley * bm.MapWidth + tilex] == 22)
+            if ((24 < bm.TileIndices[tiley * bm.MapWidth + tilex] && bm.TileIndices[tiley * bm.MapWidth + tilex] < 31) || bm.TileIndices[tiley * bm.MapWidth + tilex] == 23)
             {
-                bm.TileIndices[tiley * bm.MapWidth + tilex] = 23;
+                bm.TileIndices[tiley * bm.MapWidth + tilex] = bm.TileIndices[tiley * bm.MapWidth + tilex]--;
             }
         }
 
@@ -261,15 +266,9 @@ namespace CityBuilderGame
             throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// draws the farmer
-        /// </summary>
-        /// <param name="s">spritebatch</param>
-        /// <param name="gT">game time</param>
         public override void Draw(SpriteBatch s, GameTime gT)
         {
-            s.Draw(texture, new Vector2(DrawPosition.X-2, DrawPosition.Y), new Rectangle(animationFrame*size,0,size,size), Color.White, 0, new Vector2(0, 0), 1.25f, SpriteEffects.None, 0);
+            throw new NotImplementedException();
         }
     }
-
 }

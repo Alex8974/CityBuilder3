@@ -43,48 +43,28 @@ namespace CityBuilderGame
         /// <param name="g">the grid of water so they know where not to move</param>
         /// <param name="c">the content manager</param>
         /// <param name="bm">the buildingtile map</param>
-        public Farmer(Vector2 pos, Grid g, ContentManager c, BasicTilemap bm)
+        public Farmer(Vector2 pos, Grid g, ContentManager c, BasicTilemap bm, List<House> h)
         {
             grid = g;
             Position = new Vector2(pos.X * 32, pos.Y * 32);
             this.bm = bm;
-            FindHome();
+            FindHome(h, bm);
             texture = c.Load<Texture2D>("Farmer");
             DrawPosition = Position;
             // Initialize other properties
         }
-        public Farmer(Vector2 pos, ContentManager c, BasicTilemap bm)
+        public Farmer(Vector2 pos, ContentManager c, BasicTilemap bm, List<House> h)
         {
             grid = null;
             Position = new Vector2(pos.X * 32, pos.Y * 32);
             this.bm = bm;
-            FindHome();
+            FindHome(h, bm);
             texture = c.Load<Texture2D>("Farmer");
             DrawPosition = Position;
             // Initialize other properties
         }
 
-        /// <summary>
-        /// finds the closest unocupied home and assigns it to the farmer
-        /// </summary>
-        private void FindHome()
-        {
-            for(int i = 0; i < bm.TileIndices.Length-1; i++)
-            {
-                if (bm.TileIndices[i] == (int)BuildingOptions.BlueHouse)
-                {
-                    bm.TileIndices[i]++;
-                    int row = (i / bm.MapWidth);
-                    int col = (i % bm.MapWidth);
-                    home = new Vector2(col * bm.TileWidth, row * bm.TileHeight);
-                    break;
-                }
-                else
-                {
-                    home = Vector2.Zero;
-                }
-            }
-        }
+        
 
         /// <summary>
         /// updates the animation for the farmer
@@ -126,7 +106,7 @@ namespace CityBuilderGame
         /// </summary>
         /// <param name="gT">the game time</param>
         /// <param name="Tm"> the building map</param>
-        public new void Update(GameTime gT, BasicTilemap Tm, out int NewResources)
+        public new void Update(GameTime gT, BasicTilemap Tm, out int NewResources, List<House> h)
         {
             NewResources = 0;
             switch (state)
@@ -168,7 +148,7 @@ namespace CityBuilderGame
                         if (Position == home)
                         {
                             state = FarmerState.Idle;
-                            if (CheckHome())
+                            if (CheckHome(bm))
                             {
                                 NewResources += ResourcesHeld;
                                 ResourcesHeld = 0;
@@ -176,11 +156,11 @@ namespace CityBuilderGame
                             else
                             {
                                 home = Vector2.Zero;
-                                FindHome();
+                                FindHome(h,bm);
                             }
                         }
                     }
-                    else{FindHome();}
+                    else{FindHome(h, bm);}
                     
                     break;
                 case FarmerState.GoingtoFarm:
@@ -198,14 +178,7 @@ namespace CityBuilderGame
             }
         }
 
-        private bool CheckHome()
-        {
-            int holdx = (int)home.X / 32;
-            int holdy = (int)home.Y / 32;
-
-            if (bm.TileIndices[(holdy*bm.MapWidth) +holdx] == 21) return true;
-            else return false;
-        }
+        
 
         /// <summary>
         /// finds the closest farm to the farmer

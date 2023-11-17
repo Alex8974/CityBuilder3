@@ -55,6 +55,7 @@ namespace ExampleGame
 
         private List<Farmer> farmers;
         private List<Lumberjack> lumberjacks;
+        private List<House> housing;
         private int TotalFood = 10;
         private int TotalWood = 10;
 
@@ -74,6 +75,7 @@ namespace ExampleGame
             // TODO: Add your initialization logic here
             farmers = new();
             lumberjacks = new();
+            housing = new();
             startScreen = new StartScreen();
             controlScreen = new();
             days = new(Content);
@@ -86,7 +88,7 @@ namespace ExampleGame
         {
 
             buildingmap = Content.Load<BasicTilemap>("map5");
-            buildingScreen = new BuildingScreen(farmers, lumberjacks, Content, buildingmap);
+            buildingScreen = new BuildingScreen(farmers, lumberjacks, Content, buildingmap, housing);
             LoadGame();
         }
 
@@ -153,7 +155,7 @@ namespace ExampleGame
                     string[] possubline = subsubline[1].Split(',');
                     Vector2 pos = new Vector2(Int32.Parse(possubline[0]), Int32.Parse(possubline[1]));
                     Vector2 home = new Vector2(Int32.Parse(homesubline[0]), Int32.Parse(homesubline[1]));
-                    Farmer f = new Farmer(pos, grid, Content, buildingmap);
+                    Farmer f = new Farmer(pos, grid, Content, buildingmap, housing);
                     f.home = home;
                     farmers.Add(f);
                 }
@@ -169,7 +171,7 @@ namespace ExampleGame
                     string[] possubline = subsubline[1].Split(',');
                     Vector2 pos = new Vector2(Int32.Parse(possubline[0]), Int32.Parse(possubline[1]));
                     Vector2 home = new Vector2(Int32.Parse(homesubline[0]), Int32.Parse(homesubline[1]));
-                    Lumberjack f = new Lumberjack(pos, grid, Content, buildingmap);
+                    Lumberjack f = new Lumberjack(pos, grid, Content, buildingmap, housing);
                     f.home = home;
                     lumberjacks.Add(f);
                 }
@@ -280,13 +282,13 @@ namespace ExampleGame
                 foreach (Farmer f in farmers)
                 {
                     if (days.NightOrDay == false) f.state = Farmer.FarmerState.ReturningHome;
-                    f.Update(gameTime, buildingmap, out int hold);
+                    f.Update(gameTime, buildingmap, out int hold, housing);
                     TotalFood += hold;
                 }
                 foreach (Lumberjack l in lumberjacks)
                 {
                     if (days.NightOrDay == false) l.state = Lumberjack.LumberjackState.ReturningHome;
-                    l.Update(gameTime, buildingmap, out int hold);
+                    l.Update(gameTime, buildingmap, out int hold, housing);
                     TotalWood += hold;
                 }
             }
@@ -361,7 +363,8 @@ namespace ExampleGame
             }
 
             GraphicsDevice.Clear(Color.Black);
-            // TODO: Add your drawing code here
+            
+            //stays in the same spot when the screen moves
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, camera.Transform);
             if (gameScreens != GameScreens.Controls && gameScreens != GameScreens.Start)
             {
@@ -374,9 +377,11 @@ namespace ExampleGame
                 foreach (Farmer f in farmers) f.Draw(_spriteBatch, gameTime);
                 foreach (Lumberjack l in lumberjacks) l.Draw(_spriteBatch, gameTime);
             }
+            foreach (House h in housing) h.Draw(_spriteBatch, font);
+
             _spriteBatch.End();
 
-
+            //does not move on the screen
             _spriteBatch.Begin();
             if (gameScreens == GameScreens.Start) 
             { 

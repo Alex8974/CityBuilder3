@@ -44,7 +44,7 @@ namespace ExampleGame.Screens
                         return GameScreens.Controls;
                     case SelectedIndex.Tutorial:
                         t.Initialize();
-                        t.LoadContent();
+                        t.LoadContent(new List<House>());
                         return GameScreens.Tutorial;
                     default:
                         return GameScreens.Start;
