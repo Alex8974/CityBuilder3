@@ -27,13 +27,26 @@ namespace ExampleGame
             Position = pos;
         }
 
+        public House(Vector2 pos, int c, int o)
+        {
+            Capacity = c;
+            Occupants = o;
+            Position = pos;
+            if (Capacity < Occupants) Full = false;
+            else Full = true;
+        }
+
 
         public void Draw(SpriteBatch sb, SpriteFont f)
         {
-            if(Occupants != Capacity)
+            if(Occupants < Capacity)
             {
                 sb.DrawString(f, $"{Occupants}/{Capacity}", new Vector2(Position.Y * 32, Position.X * 32), Color.Black, 0, new Vector2(0, 0), 0.5f, SpriteEffects.None, 0);
 
+            }
+            else
+            {
+                sb.DrawString(f, $"Full: {Occupants}", new Vector2(Position.Y * 32, Position.X * 32), Color.Black, 0, new Vector2(0, 0), 0.5f, SpriteEffects.None, 0);
             }
         }
     }

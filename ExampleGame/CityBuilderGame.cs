@@ -52,6 +52,7 @@ namespace ExampleGame
         StartScreen startScreen;
         ControlScreen controlScreen;
         TutorialScreen tutorialScreen;
+        Research research;
 
         private List<Farmer> farmers;
         private List<Lumberjack> lumberjacks;
@@ -78,6 +79,7 @@ namespace ExampleGame
             housing = new();
             startScreen = new StartScreen();
             controlScreen = new();
+            research = new();
             days = new(Content);
             startScreen.Initilze(Content);
             MoonCamera = new(this, new Vector3(50, 10, 10), 1.0f);
@@ -177,16 +179,32 @@ namespace ExampleGame
                 }
                 #endregion
 
-                #region[3] TotalFood
-                TotalFood = Int32.Parse(lines[3]);
+                #region[3] houseing
+                string[] housesubline = lines[3].Split(':');
+                for (int i = 0; i < Int32.Parse(housesubline[0]); i++)
+                {
+                    // 0 is the home 1 is the position
+                    string[] subsubline = housesubline[i + 1].Split('/');
+                    string[] peopleinhouse = subsubline[0].Split(',');
+                    string[] posofhouse = subsubline[1].Split(',');
+                    int o = Int32.Parse( peopleinhouse[0]);
+                    int c = Int32.Parse(peopleinhouse[1]);
+                    Vector2 pos = new Vector2(Int32.Parse(posofhouse[0]), Int32.Parse(posofhouse[1]));
+                    House h = new House(pos, c, o);
+                    housing.Add(h);
+                }
                 #endregion
 
-                #region[4] TotalWood
-                TotalWood = Int32.Parse(lines[4]);
+                #region[4] TotalFood
+                TotalFood = Int32.Parse(lines[4]);
                 #endregion
 
-                #region[5] current day
-                days.CurrentDay = Int32.Parse(lines[5]);
+                #region[5] TotalWood
+                TotalWood = Int32.Parse(lines[5]);
+                #endregion
+
+                #region[6] current day
+                days.CurrentDay = Int32.Parse(lines[6]);
                 #endregion
             }
             catch
@@ -201,12 +219,14 @@ namespace ExampleGame
         /// <param name="gameTime">the game time</param>
         protected override void Update(GameTime gameTime)
         {
-
+           
             #region keboard / mouse
             prevkeyboardstate = curkeyboardstate;
             curkeyboardstate = Keyboard.GetState();
             prevmouseState = curmouseState;
             curmouseState = Mouse.GetState();
+
+            research.Update(gameTime, curkeyboardstate, prevkeyboardstate,ref TotalFood,ref TotalWood);
 
             int tileX = (curmouseState.Position.X + (int)camera.Position.X - GraphicsDevice.Viewport.Width / 2) / _tilemap.TileWidth; // find the x coordinate of the clicked tile
             int tileY = (curmouseState.Position.Y + (int)camera.Position.Y - GraphicsDevice.Viewport.Height / 2) / _tilemap.TileHeight; // find the y coordinate of the clicked tile
@@ -344,6 +364,16 @@ namespace ExampleGame
                     ls += $"{l.Position.X / buildingmap.TileWidth},{l.Position.Y / buildingmap.TileHeight}";
                 }
                 writer.WriteLine(ls);
+
+                int housecount = housing.Count;
+                string hs = $"{housecount}";
+                foreach(House h in housing)
+                {
+                    hs += $":{h.Occupants},{h.Capacity}/";
+                    hs += $"{h.Position.X},{h.Position.Y}";
+                }
+                writer.WriteLine(hs);
+
                 writer.WriteLine(TotalFood);
                 writer.WriteLine(TotalWood);
                 writer.WriteLine(days.CurrentDay);

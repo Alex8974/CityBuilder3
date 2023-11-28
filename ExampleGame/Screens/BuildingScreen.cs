@@ -26,7 +26,7 @@ namespace ExampleGame.Screens
         Texture2D boxTexture;
         Farmer ff;
         Lumberjack ll;
-        int houseCapacity = 1;
+        public static int houseCapacity = 1;
 
 
         bool deleteMode = false;
