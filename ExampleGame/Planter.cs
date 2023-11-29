@@ -268,7 +268,7 @@ namespace ExampleGame
 
         public override void Draw(SpriteBatch s, GameTime gT)
         {
-            throw new NotImplementedException();
+            s.Draw(texture, new Vector2(DrawPosition.X - 2, DrawPosition.Y), new Rectangle(animationFrame * size, 0, size, size), Color.White, 0, new Vector2(0, 0), 1.25f, SpriteEffects.None, 0);
         }
     }
 }

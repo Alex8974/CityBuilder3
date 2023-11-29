@@ -56,6 +56,7 @@ namespace ExampleGame
 
         private List<Farmer> farmers;
         private List<Lumberjack> lumberjacks;
+        private List<Planter> planters;
         private List<House> housing;
         private int TotalFood = 10;
         private int TotalWood = 10;
@@ -76,6 +77,7 @@ namespace ExampleGame
             // TODO: Add your initialization logic here
             farmers = new();
             lumberjacks = new();
+            planters = new();
             housing = new();
             startScreen = new StartScreen();
             controlScreen = new();
@@ -232,6 +234,12 @@ namespace ExampleGame
 
             int tileX = (curmouseState.Position.X + (int)camera.Position.X - GraphicsDevice.Viewport.Width / 2) / _tilemap.TileWidth; // find the x coordinate of the clicked tile
             int tileY = (curmouseState.Position.Y + (int)camera.Position.Y - GraphicsDevice.Viewport.Height / 2) / _tilemap.TileHeight; // find the y coordinate of the clicked tile
+
+
+            int mx = (curmouseState.Position.X + (int)camera.Position.X - GraphicsDevice.Viewport.Width / 2) / _tilemap.TileWidth;
+            int my = (curmouseState.Position.Y + (int)camera.Position.Y - GraphicsDevice.Viewport.Height / 2) / _tilemap.TileHeight;
+            if (curkeyboardstate.IsKeyDown(Keys.P)) planters.Add(new Planter(new Vector2(mx, my), Content, buildingmap, housing));
+
             #endregion
 
             if (gameScreens == GameScreens.Tutorial)
@@ -293,6 +301,7 @@ namespace ExampleGame
         /// <param name="gameTime">the game time</param>
         private void GameUpdate(GameTime gameTime)
         {
+            
             //changes to and from building and moving
             if (clickState == ClickState.Building) clickState = buildingScreen.Update(gameTime, curmouseState, buildingmap, curkeyboardstate, prevkeyboardstate, camera, _graphics.GraphicsDevice, grid, ref TotalFood, ref TotalWood);
             else if (clickState == ClickState.Move)
@@ -312,6 +321,12 @@ namespace ExampleGame
                     if (days.NightOrDay == false) l.state = Lumberjack.LumberjackState.ReturningHome;
                     l.Update(gameTime, buildingmap, out int hold, housing);
                     TotalWood += hold;
+                }
+                foreach(Planter p in planters)
+                {
+                    if (days.NightOrDay == false) p.state = Planter.PlanterState.ReturningHome;
+                    p.Update(gameTime, buildingmap, out int hold, housing);
+                    TotalFood -= hold;
                 }
             }
 
@@ -410,6 +425,7 @@ namespace ExampleGame
             {
                 foreach (Farmer f in farmers) f.Draw(_spriteBatch, gameTime);
                 foreach (Lumberjack l in lumberjacks) l.Draw(_spriteBatch, gameTime);
+                foreach (Planter p in planters) p.Draw(_spriteBatch, gameTime);
             }
             foreach (House h in housing) h.Draw(_spriteBatch, font);
 
