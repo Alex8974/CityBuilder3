@@ -67,6 +67,7 @@ namespace ExampleGame
         public void Initialize()
         {
             // TODO: Add your initialization logic here
+            houses = new();
             farmers2 = new List<Farmer>();
             lumberjacks2 = new List<Lumberjack>();
             days = new(content);
