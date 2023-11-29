@@ -47,6 +47,7 @@ namespace ExampleGame
         private List<House> houses;
         private int TotalFood = 10;
         private int TotalWood = 10;
+        private Research research;
 
 
         ContentManager content;
@@ -60,6 +61,7 @@ namespace ExampleGame
             _graphics = g;
             _tilemap = land;
             gameScreens = GameScreens.Running;
+            research = new Research();
         }
 
         public void Initialize()
@@ -82,7 +84,7 @@ namespace ExampleGame
 
             grid = new Grid(_tilemap.MapWidth, _tilemap.MapHeight, _tilemap, 0);
             LoadGame();
-            buildingScreen = new BuildingScreen(farmers2, lumberjacks2, content, buildingmapt, h);
+            buildingScreen = new BuildingScreen(farmers2, lumberjacks2, content, buildingmapt, h, research);
 
             pixel = new Texture2D(_graphics.GraphicsDevice, 1, 1);
             Color[] data = new Color[1];

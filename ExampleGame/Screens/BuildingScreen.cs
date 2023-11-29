@@ -27,6 +27,7 @@ namespace ExampleGame.Screens
         Farmer ff;
         Lumberjack ll;
         public static int houseCapacity = 1;
+        Research research;
 
 
         bool deleteMode = false;
@@ -37,8 +38,9 @@ namespace ExampleGame.Screens
         /// <param name="f">the list of famres</param>
         /// <param name="l">the list of lumberjacks</param>
         /// <param name="c">the content manager</param>
-        public BuildingScreen(List<Farmer> f, List<Lumberjack> l, ContentManager c, BasicTilemap bm, List<House> h)
+        public BuildingScreen(List<Farmer> f, List<Lumberjack> l, ContentManager c, BasicTilemap bm, List<House> h, Research r)
         {
+            research = r;
             content = c;
             buildingOptions = (BuildingOptions) 20;
             farmers = f;
@@ -57,6 +59,7 @@ namespace ExampleGame.Screens
 
         public ClickState Update(GameTime gameTime, MouseState ms, BasicTilemap bm, KeyboardState kbs, KeyboardState prevkbs, Camera c, GraphicsDevice d, Grid g,ref int TotalFood,ref int TotalWood)
         {
+            research.Update(gameTime, kbs, prevkbs,ref TotalFood,ref TotalWood);
             int mx = (ms.Position.X + (int)c.Position.X - d.Viewport.Width / 2) / bm.TileWidth;
             int my = (ms.Position.Y + (int)c.Position.Y - d.Viewport.Height / 2) / bm.TileHeight;
 
@@ -397,6 +400,13 @@ namespace ExampleGame.Screens
             }
 
             #endregion
+
+            #region for the research options
+
+            research.Draw(spriteBatch, boxTexture, font, size);
+
+            #endregion
+
 
             spriteBatch.Draw(boxTexture, new Vector2(0 * 42 + 10, 32+30), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
             spriteBatch.Draw(ff.texture, new Vector2(0 * 42 + 10, 32 + 30), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);

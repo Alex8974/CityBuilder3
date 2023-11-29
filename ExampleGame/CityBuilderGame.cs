@@ -90,7 +90,7 @@ namespace ExampleGame
         {
 
             buildingmap = Content.Load<BasicTilemap>("map5");
-            buildingScreen = new BuildingScreen(farmers, lumberjacks, Content, buildingmap, housing);
+            buildingScreen = new BuildingScreen(farmers, lumberjacks, Content, buildingmap, housing, research);
             LoadGame();
         }
 
@@ -206,6 +206,10 @@ namespace ExampleGame
                 #region[6] current day
                 days.CurrentDay = Int32.Parse(lines[6]);
                 #endregion
+
+                #region[7] research
+                BuildingScreen.houseCapacity = Int32.Parse(lines[7]);
+                #endregion
             }
             catch
             {
@@ -225,8 +229,6 @@ namespace ExampleGame
             curkeyboardstate = Keyboard.GetState();
             prevmouseState = curmouseState;
             curmouseState = Mouse.GetState();
-
-            research.Update(gameTime, curkeyboardstate, prevkeyboardstate,ref TotalFood,ref TotalWood);
 
             int tileX = (curmouseState.Position.X + (int)camera.Position.X - GraphicsDevice.Viewport.Width / 2) / _tilemap.TileWidth; // find the x coordinate of the clicked tile
             int tileY = (curmouseState.Position.Y + (int)camera.Position.Y - GraphicsDevice.Viewport.Height / 2) / _tilemap.TileHeight; // find the y coordinate of the clicked tile
@@ -377,6 +379,8 @@ namespace ExampleGame
                 writer.WriteLine(TotalFood);
                 writer.WriteLine(TotalWood);
                 writer.WriteLine(days.CurrentDay);
+                int hold = housing.Count;
+                writer.WriteLine(housing[hold-1].Capacity);
             }
         }
 
