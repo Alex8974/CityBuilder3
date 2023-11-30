@@ -72,7 +72,7 @@ namespace ExampleGame.Screens
                 {
                     if (kbs.IsKeyDown(Keys.F) && !prevkbs.IsKeyDown(Keys.F)) farmers.Add(new Farmer(new Vector2(mx, my), g, content, bm, housesss));
                     if (kbs.IsKeyDown(Keys.C) && !prevkbs.IsKeyDown(Keys.C)) lumberjacks.Add(new Lumberjack(new Vector2(mx, my), g, content, bm, housesss));
-                    if (kbs.IsKeyDown(Keys.P) && !prevkbs.IsKeyDown(Keys.P)) planters.Add(new Planter(new Vector2(mx, my), g, content, bm, housesss));
+                    if (kbs.IsKeyDown(Keys.P) && !prevkbs.IsKeyDown(Keys.P) && research.PlanterResearch == true) planters.Add(new Planter(new Vector2(mx, my), g, content, bm, housesss));
 
                 }
             }

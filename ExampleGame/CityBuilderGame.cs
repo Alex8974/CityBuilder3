@@ -60,6 +60,7 @@ namespace ExampleGame
         private List<House> housing;
         private int TotalFood = 10;
         private int TotalWood = 10;
+        private int TotalPopulation = 0;
 
         Crate Moon;
         CirclingCamera MoonCamera;
@@ -350,6 +351,8 @@ namespace ExampleGame
                     Lumberjack.allWoodChoppingLocations.Clear();
                     Farmer.allFarmingLocations.Clear();
                 }
+
+                TotalPopulation = lumberjacks.Count + farmers.Count + planters.Count;
             }
 
             #region move camera
@@ -478,8 +481,9 @@ namespace ExampleGame
             if(gameScreens == GameScreens.Running)
             {
                 days.Draw(gameTime, _spriteBatch, font, GraphicsDevice.Viewport);
-                _spriteBatch.DrawString(font, $"Food : {TotalFood} ", new Vector2(700, 10), Color.Black, 0, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
-                _spriteBatch.DrawString(font, $"Wood : {TotalWood} ", new Vector2(700, 30), Color.Black, 0, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                _spriteBatch.DrawString(font, $"Food : {TotalFood} ", new Vector2(675, 10), Color.Black, 0, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                _spriteBatch.DrawString(font, $"Wood : {TotalWood} ", new Vector2(675, 30), Color.Black, 0, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+                _spriteBatch.DrawString(font, $"Population : {TotalPopulation} ", new Vector2(650, 50), Color.Black, 0, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
 
             }
             _spriteBatch.End();
