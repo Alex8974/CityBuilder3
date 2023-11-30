@@ -85,7 +85,7 @@ namespace ExampleGame
 
             grid = new Grid(_tilemap.MapWidth, _tilemap.MapHeight, _tilemap, 0);
             LoadGame();
-            buildingScreen = new BuildingScreen(farmers2, lumberjacks2, content, buildingmapt, h, research);
+            buildingScreen = new BuildingScreen(farmers2, lumberjacks2, content, buildingmapt, h, research, null);
 
             pixel = new Texture2D(_graphics.GraphicsDevice, 1, 1);
             Color[] data = new Color[1];

@@ -92,7 +92,7 @@ namespace ExampleGame
         {
 
             buildingmap = Content.Load<BasicTilemap>("map5");
-            buildingScreen = new BuildingScreen(farmers, lumberjacks, Content, buildingmap, housing, research);
+            buildingScreen = new BuildingScreen(farmers, lumberjacks, Content, buildingmap, housing, research, planters);
             LoadGame();
         }
 
@@ -212,6 +212,22 @@ namespace ExampleGame
                 #region[7] research
                 BuildingScreen.houseCapacity = Int32.Parse(lines[7]);
                 #endregion
+
+                #region[8] planters
+                string[] psubline = lines[8].Split(':');
+                for (int i = 0; i < Int32.Parse(psubline[0]); i++)
+                {
+                    // 0 is the home 1 is the position
+                    string[] subsubline = psubline[i + 1].Split('/');
+                    string[] homesubline = subsubline[0].Split(',');
+                    string[] possubline = subsubline[1].Split(',');
+                    Vector2 pos = new Vector2(Int32.Parse(possubline[0]), Int32.Parse(possubline[1]));
+                    Vector2 home = new Vector2(Int32.Parse(homesubline[0]), Int32.Parse(homesubline[1]));
+                    Planter p = new Planter(pos, grid, Content, buildingmap, housing);
+                    p.home = home;
+                    planters.Add(p);
+                }
+                #endregion
             }
             catch
             {
@@ -238,7 +254,6 @@ namespace ExampleGame
 
             int mx = (curmouseState.Position.X + (int)camera.Position.X - GraphicsDevice.Viewport.Width / 2) / _tilemap.TileWidth;
             int my = (curmouseState.Position.Y + (int)camera.Position.Y - GraphicsDevice.Viewport.Height / 2) / _tilemap.TileHeight;
-            if (curkeyboardstate.IsKeyDown(Keys.P) && !prevkeyboardstate.IsKeyDown(Keys.P)) planters.Add(new Planter(new Vector2(mx, my), grid,Content, buildingmap, housing));
 
             #endregion
 
@@ -403,6 +418,15 @@ namespace ExampleGame
                 writer.WriteLine(days.CurrentDay);
                 int hold = housing.Count;
                 writer.WriteLine(housing[hold-1].Capacity);
+
+                int plantercount = planters.Count;
+                string ps = $"{plantercount}";
+                foreach(Planter p in planters)
+                {
+                    ps += $":{p.home.X},{p.home.Y}/";
+                    ps += $"{p.Position.X / buildingmap.TileWidth},{p.Position.Y / buildingmap.TileHeight}";
+                }
+                writer.WriteLine(ps);
             }
         }
 

@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using MessageBox = System.Windows.Forms.MessageBox;
@@ -21,6 +22,7 @@ namespace ExampleGame.Screens
         List<Farmer> farmers;
         List<Lumberjack> lumberjacks;
         List<House> housesss;
+        List<Planter> planters;
         ContentManager content;
         Texture2D t;
         Texture2D boxTexture;
@@ -38,7 +40,7 @@ namespace ExampleGame.Screens
         /// <param name="f">the list of famres</param>
         /// <param name="l">the list of lumberjacks</param>
         /// <param name="c">the content manager</param>
-        public BuildingScreen(List<Farmer> f, List<Lumberjack> l, ContentManager c, BasicTilemap bm, List<House> h, Research r)
+        public BuildingScreen(List<Farmer> f, List<Lumberjack> l, ContentManager c, BasicTilemap bm, List<House> h, Research r, List<Planter> p)
         {
             research = r;
             content = c;
@@ -46,6 +48,7 @@ namespace ExampleGame.Screens
             farmers = f;
             lumberjacks = l;
             housesss = h;
+            planters = p;
             t = c.Load<Texture2D>("tilemapCastleGame1.4");
             boxTexture = c.Load<Texture2D>("SelectionBox");
             ff = new Farmer(new Vector2(100, 100), c, bm, housesss);
@@ -69,6 +72,8 @@ namespace ExampleGame.Screens
                 {
                     if (kbs.IsKeyDown(Keys.F) && !prevkbs.IsKeyDown(Keys.F)) farmers.Add(new Farmer(new Vector2(mx, my), g, content, bm, housesss));
                     if (kbs.IsKeyDown(Keys.C) && !prevkbs.IsKeyDown(Keys.C)) lumberjacks.Add(new Lumberjack(new Vector2(mx, my), g, content, bm, housesss));
+                    if (kbs.IsKeyDown(Keys.P) && !prevkbs.IsKeyDown(Keys.P)) planters.Add(new Planter(new Vector2(mx, my), g, content, bm, housesss));
+
                 }
             }
             
