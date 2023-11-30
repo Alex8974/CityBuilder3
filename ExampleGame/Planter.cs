@@ -106,7 +106,7 @@ namespace ExampleGame
                 case PlanterState.Idle:
                     // Find the next farm location and update state to "Farming"
                     PlantingLocation = FindNextPlantLocation(Tm);
-                    allFarmingLocations.Add(PlantingLocation);
+                    allplantingLocations.Add(PlantingLocation);
                     dest = PlantingLocation;
                     if (home == PlantingLocation) PlantingLocation = Vector2.Zero;
                     UpdateAnimation(gT);
@@ -124,7 +124,7 @@ namespace ExampleGame
                         state = PlanterState.ReturningHome;
                         FarmingCoolDown = 0;
                         ResourcesHeld = 1;
-                        allFarmingLocations.Remove(PlantingLocation);
+                        allplantingLocations.Remove(PlantingLocation);
                     }
                     break;
 
@@ -193,13 +193,13 @@ namespace ExampleGame
 
             for (int i = 0; i < Tm.TileIndices.Length - 1; i++)
             {
-                if (Tm.TileIndices[i] >= 24 && Tm.TileIndices[i] < 30 || Tm.TileIndices[i] == 23)
+                if (Tm.TileIndices[i] > 24 && Tm.TileIndices[i] <= 30 || Tm.TileIndices[i] == 23)
                 {
                     int row = ((i / Tm.MapWidth));
                     int col = ((i % Tm.MapWidth));
 
-                    if (allplantingLocations.Contains(new Vector2(col * bm.TileHeight, row * bm.TileWidth)) ||
-                        allFarmingLocations.Contains(new Vector2(col * bm.TileHeight, row * bm.TileWidth)) ||
+                    if (allFarmingLocations.Contains(new Vector2(col * bm.TileHeight, row * bm.TileWidth)) ||
+                        allplantingLocations.Contains(new Vector2(col * bm.TileHeight, row * bm.TileWidth)) ||
                         allWoodChoppingLocations.Contains(new Vector2(col * bm.TileHeight, row * bm.TileWidth))
                         )
                     {
@@ -250,9 +250,9 @@ namespace ExampleGame
         {
             int tilex = (int)location.X / 32;
             int tiley = (int)location.Y / 32;
-            if ((24 < bm.TileIndices[tiley * bm.MapWidth + tilex] && bm.TileIndices[tiley * bm.MapWidth + tilex] < 31) || bm.TileIndices[tiley * bm.MapWidth + tilex] == 23)
+            if ((24 < bm.TileIndices[tiley * bm.MapWidth + tilex] && bm.TileIndices[tiley * bm.MapWidth + tilex] <= 30) || bm.TileIndices[tiley * bm.MapWidth + tilex] == 23)
             {
-                bm.TileIndices[tiley * bm.MapWidth + tilex] = bm.TileIndices[tiley * bm.MapWidth + tilex]--;
+                bm.TileIndices[tiley * bm.MapWidth + tilex]--;
             }
         }
 

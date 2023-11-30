@@ -238,7 +238,7 @@ namespace ExampleGame
 
             int mx = (curmouseState.Position.X + (int)camera.Position.X - GraphicsDevice.Viewport.Width / 2) / _tilemap.TileWidth;
             int my = (curmouseState.Position.Y + (int)camera.Position.Y - GraphicsDevice.Viewport.Height / 2) / _tilemap.TileHeight;
-            if (curkeyboardstate.IsKeyDown(Keys.P)) planters.Add(new Planter(new Vector2(mx, my), Content, buildingmap, housing));
+            if (curkeyboardstate.IsKeyDown(Keys.P) && !prevkeyboardstate.IsKeyDown(Keys.P)) planters.Add(new Planter(new Vector2(mx, my), grid,Content, buildingmap, housing));
 
             #endregion
 
@@ -326,7 +326,14 @@ namespace ExampleGame
                 {
                     if (days.NightOrDay == false) p.state = Planter.PlanterState.ReturningHome;
                     p.Update(gameTime, buildingmap, out int hold, housing);
-                    TotalFood -= hold;
+                    //TotalFood -= hold;
+                }
+
+                if(days.NightOrDay == false)
+                {
+                    Planter.allplantingLocations.Clear();
+                    Lumberjack.allWoodChoppingLocations.Clear();
+                    Farmer.allFarmingLocations.Clear();
                 }
             }
 
