@@ -72,7 +72,7 @@ namespace ExampleGame.Screens
                 {
                     if (kbs.IsKeyDown(Keys.F) && !prevkbs.IsKeyDown(Keys.F)) farmers.Add(new Farmer(new Vector2(mx, my), g, content, bm, housesss));
                     if (kbs.IsKeyDown(Keys.C) && !prevkbs.IsKeyDown(Keys.C)) lumberjacks.Add(new Lumberjack(new Vector2(mx, my), g, content, bm, housesss));
-                    if (kbs.IsKeyDown(Keys.P) && !prevkbs.IsKeyDown(Keys.P) && research.PlanterResearch == true) planters.Add(new Planter(new Vector2(mx, my), g, content, bm, housesss));
+                    if (kbs.IsKeyDown(Keys.R) && !prevkbs.IsKeyDown(Keys.R) && research.PlanterResearch == true) planters.Add(new Planter(new Vector2(mx, my), g, content, bm, housesss));
 
                 }
             }
@@ -173,7 +173,7 @@ namespace ExampleGame.Screens
             else return ClickState.Building;
 
         }
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch, SpriteFont font)
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch, SpriteFont font, Research r)
         {            
             if(!deleteMode)spriteBatch.DrawString(font, $"Click to build", new Vector2(280, 100), Color.Black, 0, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
             else spriteBatch.DrawString(font, "Click to Delete Item", new Vector2(250, 100), Color.DarkRed, 0, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
@@ -420,6 +420,13 @@ namespace ExampleGame.Screens
             spriteBatch.Draw(boxTexture, new Vector2(1 * 42 + 10, 32 + 30), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
             spriteBatch.Draw(ll.texture, new Vector2(1 * 42 + 10, 32 + 30), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
             spriteBatch.DrawString(font, "'C'", new Vector2(1 * 42 + 20, 100), Color.Black, 0, new Vector2(0, 0), 0.40f, SpriteEffects.None, 0);
+
+            if (r.PlanterResearch)
+            {
+                spriteBatch.Draw(boxTexture, new Vector2(2 * 42 + 10, 32 + 30), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                spriteBatch.Draw(ll.texture, new Vector2(2 * 42 + 10, 32 + 30), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                spriteBatch.DrawString(font, "'R'", new Vector2(2 * 42 + 20, 100), Color.Black, 0, new Vector2(0, 0), 0.40f, SpriteEffects.None, 0);
+            }
 
             //spriteBatch.Draw(t, new Vector2(0, 0), source, Color.White, 0f, new Vector2(0, 0), SpriteEffects.None, 0);
         }

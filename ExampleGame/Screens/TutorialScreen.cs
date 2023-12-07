@@ -281,7 +281,7 @@ namespace ExampleGame
             if (gameScreens == GameScreens.Running)
             {
                 _spriteBatch.DrawString(font, $"Currently: {clickState} ", new Vector2(250, 55), Color.Black, 0, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
-                if (clickState == ClickState.Building) buildingScreen.Draw(gameTime, _spriteBatch, font);
+                if (clickState == ClickState.Building) buildingScreen.Draw(gameTime, _spriteBatch, font, research);
 
             }
 
