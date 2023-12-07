@@ -1,4 +1,5 @@
 ﻿//using CollisionExample.Collisions;
+using ExampleGame.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SharpDX.MediaFoundation.DirectX;
@@ -256,6 +257,11 @@ namespace ExampleGame
                     if (house.Occupants == house.Capacity)
                     {
                         bm.TileIndices[(int)house.Position.X * bm.MapWidth + (int)house.Position.Y]++;
+                    }
+                    else
+                    {
+                        bm.TileIndices[(int)house.Position.X * bm.MapWidth + (int)house.Position.Y] = (int)BuildingOptions.BlueHouse;
+
                     }
                     home = new Vector2(house.Position.Y * bm.TileWidth, house.Position.X * bm.TileHeight);
                     break;

@@ -197,7 +197,7 @@ namespace ExampleGame
                     if(o != c && mysteryPerson == false)
                     {
                         mysteryPerson = true;
-                        o--;
+                       // o--;
                     }
                     House h = new House(pos, c, o);
                     housing.Add(h);
@@ -230,7 +230,7 @@ namespace ExampleGame
                     string[] possubline = subsubline[1].Split(',');
                     Vector2 pos = new Vector2(Int32.Parse(possubline[0]), Int32.Parse(possubline[1]));
                     Vector2 home = new Vector2(Int32.Parse(homesubline[0]), Int32.Parse(homesubline[1]));
-                    Planter p = new Planter(pos, grid, Content, buildingmap, housing);
+                    Planter p = new Planter(pos, grid, Content, buildingmap, housing, true);
                     p.home = home;
                     planters.Add(p);
                 }

@@ -37,12 +37,12 @@ namespace ExampleGame
         /// <param name="g">the grid of water so they know where not to move</param>
         /// <param name="c">the content manager</param>
         /// <param name="bm">the buildingtile map</param>
-        public Planter(Vector2 pos, Grid g, ContentManager c, BasicTilemap bm, List<House> h)
+        public Planter(Vector2 pos, Grid g, ContentManager c, BasicTilemap bm, List<House> h, bool fromload)
         {
             grid = g;
             Position = new Vector2(pos.X * 32, pos.Y * 32);
             this.bm = bm;
-            FindHome(h, bm);
+            if(fromload != true) FindHome(h, bm);
             texture = c.Load<Texture2D>("Farmer");
             DrawPosition = Position;
             // Initialize other properties
