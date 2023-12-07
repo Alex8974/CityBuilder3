@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using MessageBox = System.Windows.Forms.MessageBox;
 
@@ -161,6 +162,18 @@ namespace ExampleGame.Screens
                 {
                     if (ms.LeftButton == ButtonState.Pressed)
                     {
+                        if(bm.TileIndices[(my * bm.MapWidth) + mx] == (int)BuildingOptions.BlueHouse || bm.TileIndices[(my * bm.MapWidth) + mx] == (int)BuildingOptions.RedHouse)
+                        {
+                            House hold = null;
+                            foreach(House h in housesss)
+                            {
+                                if(h.Position == new Vector2(my, mx))
+                                {
+                                    hold = h;
+                                }
+                            }
+                            housesss.Remove(hold);
+                        }
                         bm.TileIndices[(my * bm.MapWidth) + mx] = 0;
                     }
                 }
