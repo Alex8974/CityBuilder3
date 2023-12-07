@@ -25,6 +25,7 @@ namespace ExampleGame
             Capacity = c;
             Full = false;
             Position = pos;
+            Occupants = 0;
         }
 
         public House(Vector2 pos, int c, int o)
@@ -32,7 +33,13 @@ namespace ExampleGame
             Capacity = c;
             Occupants = o;
             Position = pos;
-            if (Capacity < Occupants) Full = false;
+            if (Capacity > Occupants) Full = false;
+            else Full = true;
+        }
+
+        public void Update()
+        {
+            if (Capacity > Occupants) Full = false;
             else Full = true;
         }
 

@@ -276,6 +276,8 @@ namespace ExampleGame
                 if(gameScreens == GameScreens.Running) CloseGame();
                 farmers.Clear();
                 lumberjacks.Clear();
+                planters.Clear();
+                housing.Clear();
                 days.NightOrDay = true;
                 if (gameScreens != GameScreens.Start) gameScreens = GameScreens.Start;
                 else Exit();
@@ -321,7 +323,7 @@ namespace ExampleGame
         /// <param name="gameTime">the game time</param>
         private void GameUpdate(GameTime gameTime)
         {
-            
+            foreach (House h in housing) h.Update();
             //changes to and from building and moving
             if (clickState == ClickState.Building) clickState = buildingScreen.Update(gameTime, curmouseState, buildingmap, curkeyboardstate, prevkeyboardstate, camera, _graphics.GraphicsDevice, grid, ref TotalFood, ref TotalWood);
             else if (clickState == ClickState.Move)

@@ -44,6 +44,7 @@ namespace ExampleGame
 
         private List<Farmer> farmers2;
         private List<Lumberjack> lumberjacks2;
+        private List<Planter> planters;
         private List<House> houses;
         private int TotalFood = 10;
         private int TotalWood = 10;
@@ -70,6 +71,7 @@ namespace ExampleGame
             houses = new();
             farmers2 = new List<Farmer>();
             lumberjacks2 = new List<Lumberjack>();
+            planters = new();
             days = new(content);
             buildingmapt = new();
         }
@@ -85,7 +87,7 @@ namespace ExampleGame
 
             grid = new Grid(_tilemap.MapWidth, _tilemap.MapHeight, _tilemap, 0);
             LoadGame();
-            buildingScreen = new BuildingScreen(farmers2, lumberjacks2, content, buildingmapt, h, research, null);
+            buildingScreen = new BuildingScreen(farmers2, lumberjacks2, content, buildingmapt, h, research, planters);
 
             pixel = new Texture2D(_graphics.GraphicsDevice, 1, 1);
             Color[] data = new Color[1];
@@ -213,6 +215,11 @@ namespace ExampleGame
                         if (days.NightOrDay == false) l.state = Lumberjack.LumberjackState.ReturningHome;
                         l.Update(gameTime, buildingmapt, out int hold, houses);
                         TotalWood += hold;
+                    }
+                    foreach(Planter p in planters)
+                    {
+                        if (days.NightOrDay == false) p.state = Planter.PlanterState.ReturningHome;
+                        p.Update(gameTime, buildingmapt, grid);
                     }
                 }
 
