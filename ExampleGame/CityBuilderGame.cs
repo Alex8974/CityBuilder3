@@ -183,6 +183,7 @@ namespace ExampleGame
                 #endregion
 
                 #region[3] houseing
+                bool mysteryPerson = false;
                 string[] housesubline = lines[3].Split(':');
                 for (int i = 0; i < Int32.Parse(housesubline[0]); i++)
                 {
@@ -193,6 +194,11 @@ namespace ExampleGame
                     int o = Int32.Parse( peopleinhouse[0]);
                     int c = Int32.Parse(peopleinhouse[1]);
                     Vector2 pos = new Vector2(Int32.Parse(posofhouse[0]), Int32.Parse(posofhouse[1]));
+                    if(o != c && mysteryPerson == false)
+                    {
+                        mysteryPerson = true;
+                        o--;
+                    }
                     House h = new House(pos, c, o);
                     housing.Add(h);
                 }
@@ -278,6 +284,9 @@ namespace ExampleGame
                 lumberjacks.Clear();
                 planters.Clear();
                 housing.Clear();
+                Farmer.allFarmingLocations.Clear();
+                Lumberjack.allWoodChoppingLocations.Clear();
+                Planter.allplantingLocations.Clear();
                 days.NightOrDay = true;
                 if (gameScreens != GameScreens.Start) gameScreens = GameScreens.Start;
                 else Exit();

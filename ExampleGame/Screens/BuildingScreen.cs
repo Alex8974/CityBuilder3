@@ -167,10 +167,7 @@ namespace ExampleGame.Screens
                             House hold = null;
                             foreach(House h in housesss)
                             {
-                                if(h.Position == new Vector2(my, mx))
-                                {
-                                    hold = h;
-                                }
+                                if (h.Position == new Vector2(my, mx)) hold = h;
                             }
                             housesss.Remove(hold);
                         }
