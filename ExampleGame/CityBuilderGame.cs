@@ -61,6 +61,7 @@ namespace ExampleGame
         private int TotalFood = 10;
         private int TotalWood = 10;
         private int TotalPopulation = 0;
+        private SpecialBuildings specialBuildings;
 
         Crate Moon;
         CirclingCamera MoonCamera;
@@ -84,8 +85,10 @@ namespace ExampleGame
             controlScreen = new();
             research = new();
             days = new(Content);
+            specialBuildings = new();
             startScreen.Initilze(Content);
             MoonCamera = new(this, new Vector3(50, 10, 10), 1.0f);
+            specialBuildings.Initilize(Content);
             base.Initialize();
         }
 
@@ -267,6 +270,8 @@ namespace ExampleGame
             int my = (curmouseState.Position.Y + (int)camera.Position.Y - GraphicsDevice.Viewport.Height / 2) / _tilemap.TileHeight;
 
             #endregion
+            specialBuildings.Update(gameTime, 5, curkeyboardstate, prevkeyboardstate, new Vector2(tileX, tileY));
+
 
             if (gameScreens == GameScreens.Tutorial)
             {
@@ -465,6 +470,9 @@ namespace ExampleGame
             
             //stays in the same spot when the screen moves
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, camera.Transform);
+
+            
+
             if (gameScreens != GameScreens.Controls && gameScreens != GameScreens.Start)
             {
                 _tilemap.Draw(gameTime, _spriteBatch);
@@ -476,6 +484,7 @@ namespace ExampleGame
                 foreach (Farmer f in farmers) f.Draw(_spriteBatch, gameTime);
                 foreach (Lumberjack l in lumberjacks) l.Draw(_spriteBatch, gameTime);
                 foreach (Planter p in planters) p.Draw(_spriteBatch, gameTime);
+                specialBuildings.Draw(gameTime, _spriteBatch);
             }
             foreach (House h in housing) h.Draw(_spriteBatch, font);
 
