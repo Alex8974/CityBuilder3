@@ -68,10 +68,10 @@ namespace ExampleGame
         public void Initialize()
         {
             // TODO: Add your initialization logic here
-            _graphics.GraphicsDevice.Viewport = new Viewport(0, 0, 800, 400);
+            _graphics.GraphicsDevice.Viewport = new Viewport(0, 0, 1600, 800);
 
-            _graphics.PreferredBackBufferWidth = 800;
-            _graphics.PreferredBackBufferHeight = 400;
+            _graphics.PreferredBackBufferWidth = 1600;
+            _graphics.PreferredBackBufferHeight = 800;
             _graphics.ApplyChanges();
             houses = new();
             farmers2 = new List<Farmer>();
