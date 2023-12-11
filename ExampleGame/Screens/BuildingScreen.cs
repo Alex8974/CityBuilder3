@@ -64,10 +64,25 @@ namespace ExampleGame.Screens
         public ClickState Update(GameTime gameTime, MouseState ms, BasicTilemap bm, KeyboardState kbs, KeyboardState prevkbs, Camera c, GraphicsDevice d, Grid g,ref int TotalFood,ref int TotalWood)
         {
             research.Update(gameTime, kbs, prevkbs,ref TotalFood,ref TotalWood);
-            int mx = (ms.Position.X + (int)c.Position.X - d.Viewport.Width / 2) / bm.TileWidth;
-            int my = (ms.Position.Y + (int)c.Position.Y - d.Viewport.Height / 2) / bm.TileHeight;
+            //int mx = (ms.Position.X + (int)c.Position.X - d.Viewport.Width / 2) / bm.TileWidth;
+            //int my = (ms.Position.Y + (int)c.Position.Y - d.Viewport.Height / 2) / bm.TileHeight;
 
-            if(mx >=0 && mx <= bm.MapWidth)
+            float scaleX = (float)d.PresentationParameters.BackBufferWidth / 800;
+            float scaleY = (float)d.PresentationParameters.BackBufferHeight / 400;
+
+            int scaledMouseX = (int)((ms.Position.X / scaleX) + (int)c.Position.X - d.Viewport.Width / 2);
+            int scaledMouseY = (int)((ms.Position.Y / scaleY) + (int)c.Position.Y - d.Viewport.Height / 2);
+
+            // Calculate the tile coordinates using the scaled mouse position
+            int mx = scaledMouseX / bm.TileWidth;
+            int my = scaledMouseY / bm.TileHeight;
+
+            // Add debug output
+            Console.WriteLine($"Original Mouse: {ms.Position.X}, {ms.Position.Y}");
+            Console.WriteLine($"Camera Position: {c.Position.X}, {c.Position.Y}");
+            Console.WriteLine($"Scaled Mouse: {scaledMouseX}, {scaledMouseY}");
+
+            if (mx >=0 && mx <= bm.MapWidth)
             {
                 if(my >= 0 && my <= bm.MapHeight)
                 {

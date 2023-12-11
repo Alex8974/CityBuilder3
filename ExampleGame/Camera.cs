@@ -33,8 +33,11 @@ namespace ExampleGame
             this.viewport = viewport;
             Scale = 1.0f;
             Position = new Vector2(viewport.Width /2, viewport.Height/2);
-            backgroundWidth = width;
+            backgroundWidth = width*2;
+            backgroundWidth -= 160;
             backgroundHeight = height;
+            backgroundHeight += 400;
+            
             UpdateTransform(viewport);
         }
 
@@ -49,33 +52,49 @@ namespace ExampleGame
         /// moves the camera screen
         /// </summary>
         /// <param name="delta">how you want the camera to move</param>
+        //public void Move(Vector2 delta)
+        //{
+
+        //    Position += delta;
+        //    float SideofScreen;
+        //    float topbottomScreen;
+        //    if (Position.X <= viewport.Width / 2) SideofScreen = Position.X - (viewport.Width / 2/ Scale);
+        //    else SideofScreen = Position.X + (viewport.Width / 2 / Scale);
+
+        //    if (Position.Y <= viewport.Height / 2) topbottomScreen = Position.Y - (viewport.Height / 2 / Scale);
+        //    else topbottomScreen = Position.Y + (viewport.Height / 2 / Scale);
+
+        //    float holdx = MathHelper.Clamp(SideofScreen, 0, backgroundWidth);
+        //    float holdy = MathHelper.Clamp(topbottomScreen, 0, backgroundHeight);
+
+
+        //    if (Position.X <= viewport.Width / 2)
+        //    {
+        //        if (Position.Y <= viewport.Height / 2) Position = new Vector2(holdx + (viewport.Width / 2 / Scale), holdy + (viewport.Height / 2 / Scale));
+        //        else Position = new Vector2(holdx + (viewport.Width / 2 / Scale), holdy - (viewport.Height / 2 / Scale));
+        //    }
+        //    else
+        //    {
+        //        if (Position.Y <= viewport.Height / 2) Position = new Vector2(holdx - (viewport.Width / 2 / Scale), holdy + (viewport.Height / 2 / Scale));
+        //        else Position = new Vector2(holdx - (viewport.Width / 2 / Scale), holdy - (viewport.Height / 2 / Scale));
+        //    }
+                
+        //}
+
+
         public void Move(Vector2 delta)
         {
-
             Position += delta;
-            float SideofScreen;
-            float topbottomScreen;
-            if (Position.X <= viewport.Width / 2) SideofScreen = Position.X - (viewport.Width / 2/ Scale);
-            else SideofScreen = Position.X + (viewport.Width / 2 / Scale);
 
-            if (Position.Y <= viewport.Height / 2) topbottomScreen = Position.Y - (viewport.Height / 2 / Scale);
-            else topbottomScreen = Position.Y + (viewport.Height / 2 / Scale);
+            // Calculate the screen borders in logical coordinates
+            float leftBorder = viewport.Width / 2 / Scale;
+            float rightBorder = backgroundWidth - viewport.Width / 2 / Scale;
+            float topBorder = viewport.Height / 2 / Scale;
+            float bottomBorder = backgroundHeight - viewport.Height / 2 / Scale;
 
-            float holdx = MathHelper.Clamp(SideofScreen, 0, backgroundWidth);
-            float holdy = MathHelper.Clamp(topbottomScreen, 0, backgroundHeight);
-
-
-            if (Position.X <= viewport.Width / 2)
-            {
-                if (Position.Y <= viewport.Height / 2) Position = new Vector2(holdx + (viewport.Width / 2 / Scale), holdy + (viewport.Height / 2 / Scale));
-                else Position = new Vector2(holdx + (viewport.Width / 2 / Scale), holdy - (viewport.Height / 2 / Scale));
-            }
-            else
-            {
-                if (Position.Y <= viewport.Height / 2) Position = new Vector2(holdx - (viewport.Width / 2 / Scale), holdy + (viewport.Height / 2 / Scale));
-                else Position = new Vector2(holdx - (viewport.Width / 2 / Scale), holdy - (viewport.Height / 2 / Scale));
-            }
-                
+            // Clamp the camera position within the borders
+            Position.X = MathHelper.Clamp(Position.X, leftBorder, rightBorder);
+            Position.Y = MathHelper.Clamp(Position.Y, topBorder, bottomBorder);
         }
 
         public void Center(Viewport viewport)

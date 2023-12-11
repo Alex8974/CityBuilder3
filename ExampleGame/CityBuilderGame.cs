@@ -76,7 +76,15 @@ namespace ExampleGame
 
         protected override void Initialize()
         {
+            int logicalWidth = 1600;
+            int logicalHeight = 800;
             // TODO: Add your initialization logic here
+            GraphicsDevice.Viewport = new Viewport(0, 0, logicalWidth, logicalHeight);
+
+            _graphics.PreferredBackBufferWidth = logicalWidth;
+            _graphics.PreferredBackBufferHeight = logicalHeight;
+            _graphics.ApplyChanges();
+
             farmers = new();
             lumberjacks = new();
             planters = new();
@@ -262,13 +270,24 @@ namespace ExampleGame
             prevmouseState = curmouseState;
             curmouseState = Mouse.GetState();
 
-            int tileX = (curmouseState.Position.X + (int)camera.Position.X - GraphicsDevice.Viewport.Width / 2) / _tilemap.TileWidth; // find the x coordinate of the clicked tile
-            int tileY = (curmouseState.Position.Y + (int)camera.Position.Y - GraphicsDevice.Viewport.Height / 2) / _tilemap.TileHeight; // find the y coordinate of the clicked tile
+            //int tileX = (curmouseState.Position.X + (int)camera.Position.X - GraphicsDevice.Viewport.Width / 2) / _tilemap.TileWidth; // find the x coordinate of the clicked tile
+            //int tileY = (curmouseState.Position.Y + (int)camera.Position.Y - GraphicsDevice.Viewport.Height / 2) / _tilemap.TileHeight; // find the y coordinate of the clicked tile
 
 
-            int mx = (curmouseState.Position.X + (int)camera.Position.X - GraphicsDevice.Viewport.Width / 2) / _tilemap.TileWidth;
-            int my = (curmouseState.Position.Y + (int)camera.Position.Y - GraphicsDevice.Viewport.Height / 2) / _tilemap.TileHeight;
+            //int mx = (curmouseState.Position.X + (int)camera.Position.X - GraphicsDevice.Viewport.Width / 2) / _tilemap.TileWidth;
+            //int my = (curmouseState.Position.Y + (int)camera.Position.Y - GraphicsDevice.Viewport.Height / 2) / _tilemap.TileHeight;
 
+
+            // Calculate the scaled mouse position
+            float scaleX = (float)GraphicsDevice.PresentationParameters.BackBufferWidth / 800;
+            float scaleY = (float)GraphicsDevice.PresentationParameters.BackBufferHeight / 400;
+
+            int scaledMouseX = (int)((curmouseState.Position.X + (int)camera.Position.X - GraphicsDevice.Viewport.Width / 2) / scaleX);
+            int scaledMouseY = (int)((curmouseState.Position.Y + (int)camera.Position.Y - GraphicsDevice.Viewport.Height / 2) / scaleY);
+
+            // Calculate the tile coordinates using the scaled mouse position
+            int tileX = scaledMouseX / _tilemap.TileWidth;
+            int tileY = scaledMouseY / _tilemap.TileHeight;
             #endregion
             specialBuildings.Update(gameTime, 5, curkeyboardstate, prevkeyboardstate, new Vector2(tileX, tileY));
 
@@ -460,45 +479,52 @@ namespace ExampleGame
         /// <param name="gameTime">the game time</param>
         protected override void Draw(GameTime gameTime)
         {
-            if(gameScreens == GameScreens.Tutorial)
+            Matrix cameraMatrix = camera.Transform;// Your existing camera matrix
+            float scaleX = (float)GraphicsDevice.PresentationParameters.BackBufferWidth / 800;
+            float scaleY = (float)GraphicsDevice.PresentationParameters.BackBufferHeight / 400;
+
+            // Apply scaling factors to the camera matrix
+            Matrix scaleMatrix = Matrix.CreateScale(scaleX, scaleY, 1.0f);
+            Matrix scaledCameraMatrix = Matrix.Multiply(cameraMatrix, scaleMatrix);
+
+            if (gameScreens == GameScreens.Tutorial)
             {
-                tutorialScreen.Draw(gameTime, ref camera, font, font2);
+                tutorialScreen.Draw(gameTime, ref camera, font, font2, scaleMatrix);
                 return;
             }
 
             GraphicsDevice.Clear(Color.Black);
+
             
+
             //stays in the same spot when the screen moves
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, camera.Transform);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, scaledCameraMatrix);
+                if (gameScreens != GameScreens.Controls && gameScreens != GameScreens.Start)
+                {
+                    _tilemap.Draw(gameTime, _spriteBatch);
+                    buildingmap.Draw(gameTime, _spriteBatch);
+                }
 
-            
-
-            if (gameScreens != GameScreens.Controls && gameScreens != GameScreens.Start)
-            {
-                _tilemap.Draw(gameTime, _spriteBatch);
-                buildingmap.Draw(gameTime, _spriteBatch);
-            }
-
-            if(gameScreens == GameScreens.Running)
-            {
-                foreach (Farmer f in farmers) f.Draw(_spriteBatch, gameTime);
-                foreach (Lumberjack l in lumberjacks) l.Draw(_spriteBatch, gameTime);
-                foreach (Planter p in planters) p.Draw(_spriteBatch, gameTime);
-                specialBuildings.Draw(gameTime, _spriteBatch);
-            }
-            foreach (House h in housing) h.Draw(_spriteBatch, font);
-
+                if(gameScreens == GameScreens.Running)
+                {
+                    foreach (Farmer f in farmers) f.Draw(_spriteBatch, gameTime);
+                    foreach (Lumberjack l in lumberjacks) l.Draw(_spriteBatch, gameTime);
+                    foreach (Planter p in planters) p.Draw(_spriteBatch, gameTime);
+                    specialBuildings.Draw(gameTime, _spriteBatch);
+                }
+                foreach (House h in housing) h.Draw(_spriteBatch, font);
             _spriteBatch.End();
 
+
             //does not move on the screen
-            _spriteBatch.Begin();
+            _spriteBatch.Begin(transformMatrix: scaleMatrix);
             if (gameScreens == GameScreens.Start) 
             { 
                 startScreen.Draw(gameTime, _spriteBatch, font);
             }
             else if (gameScreens == GameScreens.Running)
             {
-                _spriteBatch.DrawString(font, $"Currently: {clickState} ", new Vector2(250, 55), Color.Black, 0, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                _spriteBatch.DrawString(font, $"Currently: {clickState} ", new Vector2(250, 55), Color.Black, 0, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
                 if (clickState == ClickState.Building) buildingScreen.Draw(gameTime, _spriteBatch, font, research);
             }
             else if (gameScreens == GameScreens.Controls) controlScreen.Draw(_spriteBatch, font);

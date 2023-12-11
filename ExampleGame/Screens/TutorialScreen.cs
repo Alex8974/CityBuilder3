@@ -68,6 +68,11 @@ namespace ExampleGame
         public void Initialize()
         {
             // TODO: Add your initialization logic here
+            _graphics.GraphicsDevice.Viewport = new Viewport(0, 0, 800, 400);
+
+            _graphics.PreferredBackBufferWidth = 800;
+            _graphics.PreferredBackBufferHeight = 400;
+            _graphics.ApplyChanges();
             houses = new();
             farmers2 = new List<Farmer>();
             lumberjacks2 = new List<Lumberjack>();
@@ -187,8 +192,8 @@ namespace ExampleGame
                 return GameScreens.Start;
             }
 
-            int tileX = (curmouseState.Position.X + (int)camera.Position.X - _graphics.GraphicsDevice.Viewport.Width / 2) / _tilemap.TileWidth; // find the x coordinate of the clicked tile
-            int tileY = (curmouseState.Position.Y + (int)camera.Position.Y - _graphics.GraphicsDevice.Viewport.Height / 2) / _tilemap.TileHeight; // find the y coordinate of the clicked tile
+            //int tileX = (curmouseState.Position.X + (int)camera.Position.X - _graphics.GraphicsDevice.Viewport.Width / 2) / _tilemap.TileWidth; // find the x coordinate of the clicked tile
+            //int tileY = (curmouseState.Position.Y + (int)camera.Position.Y - _graphics.GraphicsDevice.Viewport.Height / 2) / _tilemap.TileHeight; // find the y coordinate of the clicked tile
 
 
             if (gameScreens == GameScreens.Running)
@@ -241,12 +246,15 @@ namespace ExampleGame
         /// draws the sprites
         /// </summary>
         /// <param name="gameTime">the game time</param>
-        public void Draw(GameTime gameTime, ref Camera camera, SpriteFont font, SpriteFont small)
+        public void Draw(GameTime gameTime, ref Camera camera, SpriteFont font, SpriteFont small, Matrix scaleMatrix)
         {
             _graphics.GraphicsDevice.Clear(Color.Black);
 
+
+            Matrix scaledCameraMatrix = Matrix.Multiply(camera.Transform , scaleMatrix);
+
             // TODO: Add your drawing code here
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, camera.Transform);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, scaledCameraMatrix);
 
             if (gameScreens != GameScreens.Controls)
             {
@@ -274,6 +282,9 @@ namespace ExampleGame
             _spriteBatch.Draw(pixel, new Rectangle(x-20, y + 35, 260, 24), Color.White);
             _spriteBatch.DrawString(small, "Now Try building a house and 2 farms", new Vector2(x-20 + 3, y + 3+35), Color.Black, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
 
+            _spriteBatch.Draw(pixel, new Rectangle(x - 20, y + 70, 260, 24), Color.White);
+            _spriteBatch.DrawString(small, "Use the 'Q' and 'E' to swtich building options", new Vector2(x - 20 + 3, y + 3 + 70), Color.Black, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+
 
             x = 225;
             y = 650;
@@ -283,7 +294,7 @@ namespace ExampleGame
 
 
 
-            _spriteBatch.Begin();
+            _spriteBatch.Begin(transformMatrix: scaleMatrix);
 
             if (gameScreens == GameScreens.Running)
             {
