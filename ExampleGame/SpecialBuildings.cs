@@ -39,6 +39,7 @@ namespace ExampleGame
         public Dictionary<int, Wonders> avaliableWonders; // the first section 
         public Dictionary<int, Wonders> buildableWonders; // can build but not built
         public Dictionary<KeyValuePair<int, Vector2>, Wonders> builtWonders; // built wonders
+        private bool shown = false;
 
         int Popcap = 25;
         int lastpop = 0;
@@ -91,6 +92,12 @@ namespace ExampleGame
                 }
                 
             }
+            if(shown == false && builtWonders.Count == 12)
+            {
+                MessageBox.Show("You have scuessfully built all the wonders! \n You have won the game but feel free to continue playing!");
+                shown = true;
+            }
+
         }
 
         /// <summary>
