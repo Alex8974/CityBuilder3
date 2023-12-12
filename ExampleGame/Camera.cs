@@ -48,40 +48,6 @@ namespace ExampleGame
                         Matrix.CreateTranslation(viewport.Width / 2, viewport.Height / 2, 0);
         }
 
-        /// <summary>
-        /// moves the camera screen
-        /// </summary>
-        /// <param name="delta">how you want the camera to move</param>
-        //public void Move(Vector2 delta)
-        //{
-
-        //    Position += delta;
-        //    float SideofScreen;
-        //    float topbottomScreen;
-        //    if (Position.X <= viewport.Width / 2) SideofScreen = Position.X - (viewport.Width / 2/ Scale);
-        //    else SideofScreen = Position.X + (viewport.Width / 2 / Scale);
-
-        //    if (Position.Y <= viewport.Height / 2) topbottomScreen = Position.Y - (viewport.Height / 2 / Scale);
-        //    else topbottomScreen = Position.Y + (viewport.Height / 2 / Scale);
-
-        //    float holdx = MathHelper.Clamp(SideofScreen, 0, backgroundWidth);
-        //    float holdy = MathHelper.Clamp(topbottomScreen, 0, backgroundHeight);
-
-
-        //    if (Position.X <= viewport.Width / 2)
-        //    {
-        //        if (Position.Y <= viewport.Height / 2) Position = new Vector2(holdx + (viewport.Width / 2 / Scale), holdy + (viewport.Height / 2 / Scale));
-        //        else Position = new Vector2(holdx + (viewport.Width / 2 / Scale), holdy - (viewport.Height / 2 / Scale));
-        //    }
-        //    else
-        //    {
-        //        if (Position.Y <= viewport.Height / 2) Position = new Vector2(holdx - (viewport.Width / 2 / Scale), holdy + (viewport.Height / 2 / Scale));
-        //        else Position = new Vector2(holdx - (viewport.Width / 2 / Scale), holdy - (viewport.Height / 2 / Scale));
-        //    }
-                
-        //}
-
-
         public void Move(Vector2 delta)
         {
             Position += delta;

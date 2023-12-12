@@ -30,14 +30,11 @@ namespace ExampleGame.Screens
             sb.DrawString(f, "-Use the 'q' and 'e' keys to toggle building options", new Vector2(40, 110), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
             sb.DrawString(f, "-Press the letter under the person to place them" , new Vector2(40, 140), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
             sb.DrawString(f, "at your mouse position", new Vector2(60, 170), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
-            sb.DrawString(f, "-Use the arrow keys or 'wasd' to move the screen", new Vector2(20, 200), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
-            sb.DrawString(f, "-when exiting press the 'esc' key to save your data", new Vector2(50, 230), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
-
-
+            sb.DrawString(f, "-Press the 'x' button to enter a delete mode" , new Vector2(40, 200), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
+            sb.DrawString(f, "-Use the arrow keys or 'wasd' to move the screen", new Vector2(20, 230), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
+            sb.DrawString(f, "-when exiting press the 'esc' key to save your data", new Vector2(50, 260), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
             sb.DrawString(f, "Can You build all 12 world famous buildings?", new Vector2(20, 320), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
             sb.DrawString(f, "-You unlock one for every 25 people you have", new Vector2(40, 350), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
-
-
         }
     }
 }

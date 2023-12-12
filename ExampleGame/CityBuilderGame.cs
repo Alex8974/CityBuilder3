@@ -23,6 +23,7 @@ using ExampleGame.BiggerTileMapGenerator;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using System.Reflection;
+using Microsoft.Xna.Framework.Media;
 
 namespace ExampleGame
 {
@@ -67,6 +68,8 @@ namespace ExampleGame
 
         Crate Moon;
         CirclingCamera MoonCamera;
+
+        Song song;
 
         public CityBuilderGame()
         {
@@ -116,7 +119,8 @@ namespace ExampleGame
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
+            song = Content.Load<Song>("SalmonLikeTheFish");
+            MediaPlayer.Play(song);
             _tilemap = Content.Load<BasicTilemap>("map4");
             tutorialScreen = new(Content, font, _graphics, _tilemap);
 

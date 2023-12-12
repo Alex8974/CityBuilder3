@@ -142,6 +142,12 @@
 /processorParam:TextureFormat=Color
 /build:Planter.png
 
+#begin SalmonLikeTheFish.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:SalmonLikeTheFish.mp3
+
 #begin SelectionBox.png
 /importer:TextureImporter
 /processor:TextureProcessor
