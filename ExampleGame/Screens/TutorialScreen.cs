@@ -49,6 +49,7 @@ namespace ExampleGame
         private int TotalFood = 10;
         private int TotalWood = 10;
         private Research research;
+        private SpecialBuildings specialBuildings;
 
 
         ContentManager content;
@@ -79,6 +80,8 @@ namespace ExampleGame
             planters = new();
             days = new(content);
             buildingmapt = new();
+            specialBuildings = new();
+            specialBuildings.Initilize(content);
         }
 
         /// <summary>
@@ -92,7 +95,7 @@ namespace ExampleGame
 
             grid = new Grid(_tilemap.MapWidth, _tilemap.MapHeight, _tilemap, 0);
             LoadGame();
-            buildingScreen = new BuildingScreen(farmers2, lumberjacks2, content, buildingmapt, h, research, planters);
+            buildingScreen = new BuildingScreen(farmers2, lumberjacks2, content, buildingmapt, h, research, planters, specialBuildings);
 
             pixel = new Texture2D(_graphics.GraphicsDevice, 1, 1);
             Color[] data = new Color[1];
@@ -200,7 +203,7 @@ namespace ExampleGame
             {
                 if (clickState == ClickState.Building)
                 { 
-                    clickState = buildingScreen.Update(gameTime, curmouseState, buildingmapt, curkeyboardstate, prevkeyboardstate, camera, _graphics.GraphicsDevice, grid, ref TotalFood, ref TotalWood); 
+                    clickState = buildingScreen.Update(gameTime, curmouseState, buildingmapt, curkeyboardstate, prevkeyboardstate, camera, _graphics.GraphicsDevice, grid, ref TotalFood, ref TotalWood, 0); 
                 }
 
                 //changes to and from building and moving
@@ -282,14 +285,18 @@ namespace ExampleGame
             _spriteBatch.Draw(pixel, new Rectangle(x-20, y + 35, 260, 24), Color.White);
             _spriteBatch.DrawString(small, "Now Try building a house and 2 farms", new Vector2(x-20 + 3, y + 3+35), Color.Black, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
 
-            _spriteBatch.Draw(pixel, new Rectangle(x - 20, y + 70, 260, 24), Color.White);
+            _spriteBatch.Draw(pixel, new Rectangle(x - 20, y + 70, 305, 24), Color.White);
             _spriteBatch.DrawString(small, "Use the 'Q' and 'E' to swtich building options", new Vector2(x - 20 + 3, y + 3 + 70), Color.Black, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
 
 
             x = 225;
             y = 650;
-            _spriteBatch.Draw(pixel, new Rectangle(x, y, 150, 24), Color.White);
-            _spriteBatch.DrawString(small, "Now Place a farmer", new Vector2(x + 3, y + 3), Color.Black, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+            _spriteBatch.Draw(pixel, new Rectangle(x, y, 203, 24), Color.White);
+            _spriteBatch.DrawString(small, "Now Place a farmer using ' F '", new Vector2(x + 3, y + 3), Color.Black, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+
+            _spriteBatch.Draw(pixel, new Rectangle(x-20, y+30, 255, 24), Color.White);
+            _spriteBatch.DrawString(small, "Press 'esc' to return to home screen", new Vector2(x + 3-20, y + 3+30), Color.Black, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+
             _spriteBatch.End();
 
 

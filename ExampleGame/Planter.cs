@@ -43,7 +43,7 @@ namespace ExampleGame
             Position = new Vector2(pos.X * 32, pos.Y * 32);
             this.bm = bm;
             if(fromload != true) FindHome(h, bm);
-            texture = c.Load<Texture2D>("Farmer");
+            texture = c.Load<Texture2D>("Planter");
             DrawPosition = Position;
             // Initialize other properties
         }
@@ -54,7 +54,7 @@ namespace ExampleGame
             Position = new Vector2(pos.X * 32, pos.Y * 32);
             this.bm = bm;
             FindHome(h, bm);
-            texture = c.Load<Texture2D>("Farmer");
+            texture = c.Load<Texture2D>("Planter");
             DrawPosition = Position;
             // Initialize other properties
         }

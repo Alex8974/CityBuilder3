@@ -29,8 +29,10 @@ namespace ExampleGame.Screens
         Texture2D boxTexture;
         Farmer ff;
         Lumberjack ll;
+        Planter pp;
         public static int houseCapacity = 1;
         Research research;
+        SpecialBuildings specialBuildings;
 
 
         bool deleteMode = false;
@@ -41,7 +43,7 @@ namespace ExampleGame.Screens
         /// <param name="f">the list of famres</param>
         /// <param name="l">the list of lumberjacks</param>
         /// <param name="c">the content manager</param>
-        public BuildingScreen(List<Farmer> f, List<Lumberjack> l, ContentManager c, BasicTilemap bm, List<House> h, Research r, List<Planter> p)
+        public BuildingScreen(List<Farmer> f, List<Lumberjack> l, ContentManager c, BasicTilemap bm, List<House> h, Research r, List<Planter> p, SpecialBuildings sb)
         {
             research = r;
             content = c;
@@ -54,6 +56,8 @@ namespace ExampleGame.Screens
             boxTexture = c.Load<Texture2D>("SelectionBox");
             ff = new Farmer(new Vector2(100, 100), c, bm, housesss);
             ll = new Lumberjack(new Vector2(100, 100),null, c, bm, housesss);
+            pp = new Planter(new Vector2(100, 100), c, bm, housesss);
+            specialBuildings = sb;
         }
 
         public void Initilize()
@@ -61,9 +65,10 @@ namespace ExampleGame.Screens
 
         }
 
-        public ClickState Update(GameTime gameTime, MouseState ms, BasicTilemap bm, KeyboardState kbs, KeyboardState prevkbs, Camera c, GraphicsDevice d, Grid g,ref int TotalFood,ref int TotalWood)
+        public ClickState Update(GameTime gameTime, MouseState ms, BasicTilemap bm, KeyboardState kbs, KeyboardState prevkbs, Camera c, GraphicsDevice d, Grid g,ref int TotalFood,ref int TotalWood, int population)
         {
             research.Update(gameTime, kbs, prevkbs,ref TotalFood,ref TotalWood);
+            
             //int mx = (ms.Position.X + (int)c.Position.X - d.Viewport.Width / 2) / bm.TileWidth;
             //int my = (ms.Position.Y + (int)c.Position.Y - d.Viewport.Height / 2) / bm.TileHeight;
 
@@ -77,11 +82,7 @@ namespace ExampleGame.Screens
             int mx = scaledMouseX / bm.TileWidth;
             int my = scaledMouseY / bm.TileHeight;
 
-            // Add debug output
-            Console.WriteLine($"Original Mouse: {ms.Position.X}, {ms.Position.Y}");
-            Console.WriteLine($"Camera Position: {c.Position.X}, {c.Position.Y}");
-            Console.WriteLine($"Scaled Mouse: {scaledMouseX}, {scaledMouseY}");
-
+            specialBuildings.Update(gameTime, population, kbs, prevkbs, new Vector2(mx, my));
             if (mx >=0 && mx <= bm.MapWidth)
             {
                 if(my >= 0 && my <= bm.MapHeight)
@@ -200,8 +201,8 @@ namespace ExampleGame.Screens
         }
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, SpriteFont font, Research r)
         {            
-            if(!deleteMode)spriteBatch.DrawString(font, $"Click to build", new Vector2(280, 100), Color.Black, 0, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
-            else spriteBatch.DrawString(font, "Click to Delete Item", new Vector2(250, 100), Color.DarkRed, 0, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+            if(!deleteMode)spriteBatch.DrawString(font, $"Click to build", new Vector2(280, 80), Color.Black, 0, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
+            else spriteBatch.DrawString(font, "Click to Delete Item", new Vector2(250, 80), Color.DarkRed, 0, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
 
             #region the building options and selection
 
@@ -429,28 +430,34 @@ namespace ExampleGame.Screens
                     break;
             }
 
+            spriteBatch.DrawString(font, "'Q' and 'E'", new Vector2(9 * 42 + 10, 10+5), Color.Black, 0, new Vector2(0, 0), 0.40f, SpriteEffects.None, 0);
+            spriteBatch.DrawString(font, "For building Options", new Vector2(9 * 42 + 10, 10+20), Color.Black, 0, new Vector2(0, 0), 0.40f, SpriteEffects.None, 0);
+
+
             #endregion
+
 
             #region for the research options
 
             research.Draw(spriteBatch, boxTexture, font, size);
+            specialBuildings.DrawBuildingMenu(gameTime, spriteBatch, font, boxTexture, size);
 
             #endregion
 
 
             spriteBatch.Draw(boxTexture, new Vector2(0 * 42 + 10, 32+30), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
             spriteBatch.Draw(ff.texture, new Vector2(0 * 42 + 10, 32 + 30), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
-            spriteBatch.DrawString(font, "'F'", new Vector2(0 * 42 + 20, 100), Color.Black, 0, new Vector2(0, 0), 0.40f, SpriteEffects.None, 0);
+            spriteBatch.DrawString(font, "' F '", new Vector2(0 * 42 + 20, 100), Color.Black, 0, new Vector2(0, 0), 0.40f, SpriteEffects.None, 0);
 
             spriteBatch.Draw(boxTexture, new Vector2(1 * 42 + 10, 32 + 30), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
             spriteBatch.Draw(ll.texture, new Vector2(1 * 42 + 10, 32 + 30), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
-            spriteBatch.DrawString(font, "'C'", new Vector2(1 * 42 + 20, 100), Color.Black, 0, new Vector2(0, 0), 0.40f, SpriteEffects.None, 0);
+            spriteBatch.DrawString(font, "' C '", new Vector2(1 * 42 + 20, 100), Color.Black, 0, new Vector2(0, 0), 0.40f, SpriteEffects.None, 0);
 
             if (r.PlanterResearch)
             {
                 spriteBatch.Draw(boxTexture, new Vector2(2 * 42 + 10, 32 + 30), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
-                spriteBatch.Draw(ll.texture, new Vector2(2 * 42 + 10, 32 + 30), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
-                spriteBatch.DrawString(font, "'R'", new Vector2(2 * 42 + 20, 100), Color.Black, 0, new Vector2(0, 0), 0.40f, SpriteEffects.None, 0);
+                spriteBatch.Draw(pp.texture, new Vector2(2 * 42 + 10, 32 + 30), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
+                spriteBatch.DrawString(font, "' R '", new Vector2(2 * 42 + 20, 100), Color.Black, 0, new Vector2(0, 0), 0.40f, SpriteEffects.None, 0);
             }
 
             //spriteBatch.Draw(t, new Vector2(0, 0), source, Color.White, 0f, new Vector2(0, 0), SpriteEffects.None, 0);

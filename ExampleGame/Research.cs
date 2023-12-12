@@ -55,18 +55,16 @@ namespace ExampleGame
             spriteBatch.DrawString(font, $"' T '", new Vector2(0 * 42 + 80, 30 + 200), Color.Black, 0, new Vector2(0, 0), 0.40f, SpriteEffects.None, 0);
             spriteBatch.DrawString(font, $"Press", new Vector2(0 * 42 + 75, 15 + 200), Color.Black, 0, new Vector2(0, 0), 0.40f, SpriteEffects.None, 0);
 
-            spriteBatch.Draw(boxTexture, new Vector2(0 * 42 + 10, 10 + 260), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), new Vector2(_scaleX, _scaleY), SpriteEffects.None, 0);
-            spriteBatch.DrawString(font, "Unlock The", new Vector2(0 * 42 + 13, 10 + 260) + size, Color.White, 0f, new Vector2(0, 0), 0.40f, SpriteEffects.None, 0);
-            spriteBatch.DrawString(font, "Planter", new Vector2(0 * 42 + 13, 20 + 260) + size, Color.White, 0f, new Vector2(0, 0), 0.40f, SpriteEffects.None, 0);
-            spriteBatch.DrawString(font, $"50 food ", new Vector2(0 * 42 + 10, 45 + 260), Color.Black, 0, new Vector2(0, 0), 0.40f, SpriteEffects.None, 0);
-            spriteBatch.DrawString(font, $"50 wood ", new Vector2(0 * 42 + 10, 55 + 260), Color.Black, 0, new Vector2(0, 0), 0.40f, SpriteEffects.None, 0);
-            spriteBatch.DrawString(font, $"' G '", new Vector2(0 * 42 + 80, 30 + 260), Color.Black, 0, new Vector2(0, 0), 0.40f, SpriteEffects.None, 0);
-            spriteBatch.DrawString(font, $"Press", new Vector2(0 * 42 + 75, 15 + 260), Color.Black, 0, new Vector2(0, 0), 0.40f, SpriteEffects.None, 0);
-
-
+            if (PlanterResearch == false)
+            {
+                spriteBatch.Draw(boxTexture, new Vector2(0 * 42 + 10, 10 + 260), new Rectangle(0 * 32, 0 * 32, 32, 32), Color.White, 0f, new Vector2(0, 0), new Vector2(_scaleX, _scaleY), SpriteEffects.None, 0);
+                spriteBatch.DrawString(font, "Unlock The", new Vector2(0 * 42 + 13, 10 + 260) + size, Color.White, 0f, new Vector2(0, 0), 0.40f, SpriteEffects.None, 0);
+                spriteBatch.DrawString(font, "Planter", new Vector2(0 * 42 + 13, 20 + 260) + size, Color.White, 0f, new Vector2(0, 0), 0.40f, SpriteEffects.None, 0);
+                spriteBatch.DrawString(font, $"50 food ", new Vector2(0 * 42 + 10, 45 + 260), Color.Black, 0, new Vector2(0, 0), 0.40f, SpriteEffects.None, 0);
+                spriteBatch.DrawString(font, $"50 wood ", new Vector2(0 * 42 + 10, 55 + 260), Color.Black, 0, new Vector2(0, 0), 0.40f, SpriteEffects.None, 0);
+                spriteBatch.DrawString(font, $"' G '", new Vector2(0 * 42 + 80, 30 + 260), Color.Black, 0, new Vector2(0, 0), 0.40f, SpriteEffects.None, 0);
+                spriteBatch.DrawString(font, $"Press", new Vector2(0 * 42 + 75, 15 + 260), Color.Black, 0, new Vector2(0, 0), 0.40f, SpriteEffects.None, 0);
+            }
         }
-
-
-
     }
 }

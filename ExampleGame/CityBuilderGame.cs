@@ -21,6 +21,8 @@ using Basic3DExample;
 using SharpDX.Direct2D1.Effects;
 using ExampleGame.BiggerTileMapGenerator;
 using System.Linq.Expressions;
+using System.Text.RegularExpressions;
+using System.Reflection;
 
 namespace ExampleGame
 {
@@ -104,7 +106,7 @@ namespace ExampleGame
         {
 
             buildingmap = Content.Load<BasicTilemap>("map5");
-            buildingScreen = new BuildingScreen(farmers, lumberjacks, Content, buildingmap, housing, research, planters);
+            buildingScreen = new BuildingScreen(farmers, lumberjacks, Content, buildingmap, housing, research, planters, specialBuildings);
             LoadGame();
         }
 
@@ -250,11 +252,99 @@ namespace ExampleGame
                 #region[9] planter Research
                 research.PlanterResearch = bool.Parse(lines[9]);
                 #endregion
+
+                #region[10] avaliable buildings
+                string input = lines[10];
+                Dictionary<int, Wonders> result = ParseDictionaryString(input);
+                specialBuildings.avaliableWonders = result;
+
+                #endregion
+
+                #region[11] buildable buildings
+                string input2 = lines[11];
+                Dictionary<int, Wonders> result2 = ParseDictionaryString(input2);
+                specialBuildings.buildableWonders = result2;
+
+                #endregion
+
+                #region[12] built buildings
+                string input3 = lines[12];
+                Dictionary<KeyValuePair<int, Vector2>, Wonders> result3 = ParseDictionaryStrin(input3);
+                specialBuildings.builtWonders = result3;
+                #endregion
             }
             catch
             {
                 MessageBox.Show("no load file found press ok to continue");
             }
+        }
+
+        static Dictionary<KeyValuePair<int, Vector2>, Wonders> ParseDictionaryStrin(string input)
+        {
+            Dictionary<KeyValuePair<int, Vector2>, Wonders> dictionary = new Dictionary<KeyValuePair<int, Vector2>, Wonders>();
+
+            // Use regular expression to match key-value pairs in the input string
+            string[] eachitem = input.Split("^");
+
+            for(int i = 0; i < eachitem.Length-1; i++)
+            {
+                string[] eachpart = eachitem[i].Split(",");
+                Enum.TryParse<Wonders>(eachpart[2].Trim('[','{','}',']'), out Wonders result);
+                string hold = eachpart[1];
+                Vector2 holdvector = new Vector2();
+                Match match = Regex.Match(hold.Trim(']'), @"X:(\d+) Y:(\d+)");
+
+                if (match.Success)
+                {
+                    // Access the captured numeric values
+                    int xValue = int.Parse(match.Groups[1].Value);
+                    int yValue = int.Parse(match.Groups[2].Value);
+
+                    // Store values in an int array
+                    holdvector.X = xValue;
+                    holdvector.Y = yValue;
+
+                }
+                else
+                {
+                    Console.WriteLine("No match found");
+                }
+
+                hold = hold.Trim('[', '{', '}', ']');
+                hold = hold.Trim('X', 'Y', ':');
+                
+                string[] holding = hold.Split(' ');
+                KeyValuePair<int, Vector2> key = new KeyValuePair<int, Vector2>(Int32.Parse(eachpart[0].Trim('[', '{', '}', ']')), holdvector);
+                dictionary.Add(key, result);
+            }
+
+            return dictionary;
+        }
+        static Dictionary<int, Wonders> ParseDictionaryString(string input)
+        {
+            Dictionary<int, Wonders> dictionary = new Dictionary<int, Wonders>();
+
+            // Use regular expression to match key-value pairs in the input string
+            var matches = Regex.Matches(input, @"\[(.*?)\]");
+
+            foreach (Match match in matches)
+            {
+                string[] items = match.Groups[1].Value.Split(',');
+
+                if (items.Length == 2)
+                {
+                    int index = int.Parse(items[0]);
+                    Wonders enumValue;
+
+                    if (Enum.TryParse<Wonders>(items[1], out enumValue))
+                    {
+                        dictionary.Add(index, enumValue);
+                    }
+                }
+                // Handle additional cases if needed (e.g., nested dictionaries)
+            }
+
+            return dictionary;
         }
 
         /// <summary>
@@ -289,7 +379,7 @@ namespace ExampleGame
             int tileX = scaledMouseX / _tilemap.TileWidth;
             int tileY = scaledMouseY / _tilemap.TileHeight;
             #endregion
-            specialBuildings.Update(gameTime, 5, curkeyboardstate, prevkeyboardstate, new Vector2(tileX, tileY));
+            
 
 
             if (gameScreens == GameScreens.Tutorial)
@@ -358,7 +448,7 @@ namespace ExampleGame
         {
             foreach (House h in housing) h.Update();
             //changes to and from building and moving
-            if (clickState == ClickState.Building) clickState = buildingScreen.Update(gameTime, curmouseState, buildingmap, curkeyboardstate, prevkeyboardstate, camera, _graphics.GraphicsDevice, grid, ref TotalFood, ref TotalWood);
+            if (clickState == ClickState.Building) clickState = buildingScreen.Update(gameTime, curmouseState, buildingmap, curkeyboardstate, prevkeyboardstate, camera, _graphics.GraphicsDevice, grid, ref TotalFood, ref TotalWood, TotalPopulation);
             else if (clickState == ClickState.Move)
             {
                 //sets the destination location
@@ -470,6 +560,34 @@ namespace ExampleGame
                 }
                 writer.WriteLine(ps);
                 writer.WriteLine(research.PlanterResearch);
+
+                #region Wonders
+
+                //writer.Write(specialBuildings.avaliableWonders.Count + ":");
+                foreach(KeyValuePair<int, Wonders> kvp in specialBuildings.avaliableWonders)
+                {
+                    writer.Write(kvp.ToString());
+                    //writer.Write(":");
+                }
+                writer.WriteLine();
+
+                //writer.Write(specialBuildings.buildableWonders.Count + ":");
+                foreach (KeyValuePair<int, Wonders> kvp in specialBuildings.buildableWonders)
+                {
+                    writer.Write(kvp.ToString());
+                    //writer.Write(":");
+                }
+                writer.WriteLine();
+
+                foreach (KeyValuePair<KeyValuePair<int, Vector2>, Wonders> kvp in specialBuildings.builtWonders)
+                {
+                    writer.Write(kvp.ToString());
+                    writer.Write("^");
+                }
+                writer.WriteLine();
+
+
+                #endregion
             }
         }
 

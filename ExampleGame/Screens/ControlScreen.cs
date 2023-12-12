@@ -27,11 +27,14 @@ namespace ExampleGame.Screens
         {
             sb.DrawString(f, "Game Controls", new Vector2(150, 50), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
             sb.DrawString(f, "-Press 'b' to switch between building and moving", new Vector2(20, 80), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
-            sb.DrawString(f, "-Use the 'Q' and 'E' keys to toggle building options", new Vector2(40, 110), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
-            sb.DrawString(f, "-Press the letter under the person it places them" , new Vector2(40, 140), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
-            sb.DrawString(f, "at your mouse", new Vector2(60, 170), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
-            sb.DrawString(f, "-Use the arrow keys or' wasd' to move the screen", new Vector2(20, 200), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
+            sb.DrawString(f, "-Use the 'q' and 'e' keys to toggle building options", new Vector2(40, 110), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
+            sb.DrawString(f, "-Press the letter under the person to place them" , new Vector2(40, 140), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
+            sb.DrawString(f, "at your mouse position", new Vector2(60, 170), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
+            sb.DrawString(f, "-Use the arrow keys or 'wasd' to move the screen", new Vector2(20, 200), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
             sb.DrawString(f, "-when exiting press the 'esc' key to save your data", new Vector2(50, 230), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
+
+
+            
         }
     }
 }
