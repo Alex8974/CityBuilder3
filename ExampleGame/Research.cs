@@ -33,6 +33,8 @@ namespace ExampleGame
             if(curk.IsKeyDown(Keys.G) && !prevk.IsKeyDown(Keys.G) && TotalFood >= 50 && TotalWood >= 50)
             {
                 PlanterResearch = true;
+                TotalFood -= 50;
+                TotalWood -= 50;
             }
 
             //if () PlanterResearch = true;

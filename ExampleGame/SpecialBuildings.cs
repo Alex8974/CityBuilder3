@@ -132,8 +132,9 @@ namespace ExampleGame
             if (buildableWonders.Count > 0)
             {
                 spriteBatch.DrawString(font, "Famous Buildings", new Vector2(700, 190), Color.Black, 0f, new Vector2(0, 0), 0.40f, SpriteEffects.None, 0);
-                spriteBatch.DrawString(font, $"' V '", new Vector2(700 + 50, 225), Color.Black, 0, new Vector2(0, 0), 0.40f, SpriteEffects.None, 0);
+                spriteBatch.DrawString(font, $"' V '", new Vector2(700 + 50, 220), Color.Black, 0, new Vector2(0, 0), 0.40f, SpriteEffects.None, 0);
                 spriteBatch.DrawString(font, $"Press", new Vector2(700 + 45, 210), Color.Black, 0, new Vector2(0, 0), 0.40f, SpriteEffects.None, 0);
+                spriteBatch.DrawString(font, $"To Build", new Vector2(700 + 45, 230), Color.Black, 0, new Vector2(0, 0), 0.40f, SpriteEffects.None, 0);
             }
             int i = 0;
             foreach(KeyValuePair<int, Wonders> kvp in buildableWonders)

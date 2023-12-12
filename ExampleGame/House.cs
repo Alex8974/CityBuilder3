@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using ExampleGame.Enums;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -37,10 +38,18 @@ namespace ExampleGame
             else Full = true;
         }
 
-        public void Update()
+        public void Update(BasicTilemap bm)
         {
-            if (Capacity > Occupants) Full = false;
-            else Full = true;
+            if (Capacity > Occupants)
+            {
+                bm.TileIndices[((int)Position.X * bm.MapWidth) + (int)Position.Y] = (int)BuildingOptions.BlueHouse;
+                Full = false;
+            }
+            else
+            {
+                bm.TileIndices[((int)Position.X * bm.MapWidth) + (int)Position.Y] = (int)BuildingOptions.RedHouse;
+                Full = true;
+            }
         }
 
 

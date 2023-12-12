@@ -34,7 +34,10 @@ namespace ExampleGame.Screens
             sb.DrawString(f, "-when exiting press the 'esc' key to save your data", new Vector2(50, 230), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
 
 
-            
+            sb.DrawString(f, "Can You build all 12 world famous buildings?", new Vector2(20, 320), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
+            sb.DrawString(f, "-You unlock one for every 25 people you have", new Vector2(40, 350), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
+
+
         }
     }
 }

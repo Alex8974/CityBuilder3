@@ -244,6 +244,21 @@ namespace ExampleGame
             }
         }
 
+        
+        public void Remove(Person p, List<House> h)
+        {
+            House hold;
+            Vector2 holdv = new Vector2(p.home.Y/32, p.home.X/32);
+            foreach(House hh in h)
+            {
+                if(hh.Position == holdv)
+                {
+                    hh.Occupants -= 1;
+                    hh.Full = false;
+                }
+            }
+        }
+
         /// <summary>
         /// finds the closest unocupied home and assigns it to the farmer
         /// </summary>

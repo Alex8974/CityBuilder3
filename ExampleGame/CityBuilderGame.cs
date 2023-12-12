@@ -391,6 +391,66 @@ namespace ExampleGame
             MoonCamera.Update(gameTime);
 
             TotalFood = days.Update(gameTime, TotalFood, farmers, lumberjacks, buildingmap);
+            if(TotalFood < 0)
+            {
+                MessageBox.Show("You ran out of food and some of your people died");
+
+
+                while(TotalFood < 0)
+                {
+                    if(lumberjacks.Count > 0)
+                    {
+                        int hold = lumberjacks.Count;
+                        Lumberjack holdl = lumberjacks[hold - 1];
+                        holdl.Remove(holdl, housing);
+                        lumberjacks.Remove(holdl);
+                        TotalFood += 2;
+                    }
+                    else if (planters.Count > 0)
+                    {
+                        int hold = planters.Count;
+                        Planter holdp = planters[hold - 1];
+                        holdp.Remove(holdp, housing);
+                        planters.Remove(holdp);
+                        TotalFood += 2;
+                    }
+                    else if(farmers.Count > 0)
+                    {
+                        int hold = farmers.Count;
+                        Farmer holdp = farmers[hold - 1];
+                        holdp.Remove(holdp, housing);
+                        farmers.Remove(holdp);
+                        TotalFood += 2;
+                    }
+                    else
+                    {
+                        MessageBox.Show("You have lost all your people \n Game Over");
+                        string currentDirectory = Directory.GetCurrentDirectory();
+                        string fileName = "buildingSaveFile.txt";
+
+                        // Use Path.Combine to create the file path
+                        string filePath = Path.Combine(currentDirectory, fileName);
+
+
+                        if (!File.Exists(filePath))
+                        {
+                            File.Create(filePath).Close();
+                        }
+
+                        // Read the first three lines from the file
+
+                        File.WriteAllText(filePath, string.Empty);
+
+                        Exit();
+                    }
+
+                }
+
+
+
+
+                
+            }
             if (Keyboard.GetState().IsKeyDown(Keys.Escape) && !prevkeyboardstate.IsKeyDown(Keys.Escape))
             {
                 if(gameScreens == GameScreens.Running) CloseGame();
@@ -446,7 +506,7 @@ namespace ExampleGame
         /// <param name="gameTime">the game time</param>
         private void GameUpdate(GameTime gameTime)
         {
-            foreach (House h in housing) h.Update();
+            foreach (House h in housing) h.Update(buildingmap);
             //changes to and from building and moving
             if (clickState == ClickState.Building) clickState = buildingScreen.Update(gameTime, curmouseState, buildingmap, curkeyboardstate, prevkeyboardstate, camera, _graphics.GraphicsDevice, grid, ref TotalFood, ref TotalWood, TotalPopulation);
             else if (clickState == ClickState.Move)
